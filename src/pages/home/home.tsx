@@ -1,14 +1,13 @@
+import { useAppStore } from "@/store/app.store";
 import { removeCache } from "@/store/native.store";
 import * as React from "react";
 import { Button, useNavigate } from "zmp-ui";
 
 export interface IHomePageProps {}
 
-export default function HomePage(props: IHomePageProps) {
+export default function HomePage(props: IHomePageProps) 
   const [userWorkPage, setWorkPage] = React.useState([]);
   const navigate = useNavigate();
-
-  React.useEffect(() => {}, []);
 
   const createBasicWorkPage = async () => {
     alert("createBasicWorkPage");

@@ -160,9 +160,8 @@ export default function WorkShiftDetailSetting(
                           : ""
                       }`}
                     >
-                      {(phase[0] / 60 < 10 ? "0" : "") +
-                        Math.floor(phase[0] / 60)}
-                      :{(phase[0] % 60 < 10 ? "0" : "") + (phase[0] % 60)}
+                      {(phase / 60 < 10 ? "0" : "") + Math.floor(phase / 60)}:
+                      {(phase % 60 < 10 ? "0" : "") + (phase % 60)}
                     </p>
                   </div>
 
