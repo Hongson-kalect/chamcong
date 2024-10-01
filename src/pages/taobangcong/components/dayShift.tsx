@@ -31,13 +31,14 @@ export default function WorkShift(props: IWorkShiftProps) {
             {/* <p>{shift.name}</p> */}
           </div>
           <div className="flex mt-1 items-center gap-2">
+            <p className="text-gray-200">Thời gian bắt đầu</p>
             <div className="w-16 h-8 bg-white rounded shadow-inner shadow-black flex items-center justify-center">
               <TimePicker
                 size="large"
                 className="h-full w-full"
                 allowClear={false}
-                defaultValue={dayjs(
-                  `${Math.floor(shift.start / 60)}:${shift.start % 60}`,
+                value={dayjs(
+                  `${Math.floor(shift.phase[0] / 60)}:${shift.phase[0] % 60}`,
                   "HH:mm"
                 )}
                 onChange={(val) => {
@@ -47,8 +48,7 @@ export default function WorkShift(props: IWorkShiftProps) {
                 suffixIcon={null}
               />
             </div>
-            <p className="text-gray-200">den</p>
-            <div className="w-16 h-8 bg-white rounded shadow-inner shadow-black flex items-center justify-center">
+            {/* <div className="w-16 h-8 bg-white rounded shadow-inner shadow-black flex items-center justify-center">
               <TimePicker
                 size="large"
                 className="h-full w-full [&_*]:text-lg"
@@ -63,7 +63,7 @@ export default function WorkShift(props: IWorkShiftProps) {
                 format={"HH:mm"}
                 suffixIcon={null}
               />
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="p-2 pl-4" style={{ borderLeft: "1px solid white" }}>
@@ -76,9 +76,17 @@ export default function WorkShift(props: IWorkShiftProps) {
       {/* Pop up */}
 
       {showDetailSetting && (
-        <PopupWrapper onClose={() => setShowDetailSetting(false)}>
+        <PopupWrapper
+          onClose={() => {
+            props.onChange();
+            setShowDetailSetting(false);
+          }}
+        >
           <WorkShiftDetailSetting
-            onClose={() => setShowDetailSetting(false)}
+            sendData={() => {
+              props.onChange();
+              // setShowDetailSetting(false);
+            }}
             shift={shift}
           />
         </PopupWrapper>

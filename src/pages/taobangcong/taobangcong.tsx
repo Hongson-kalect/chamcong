@@ -73,9 +73,9 @@ export default function CreateWorkPage(props: ICreateWorkPageProps) {
     setWorkShifts([...workShifts, JSON.parse(JSON.stringify(defaultShift))]);
   };
 
-  // React.useEffect(() => {
-  //   console.log("workShifts", workShifts);
-  // }, [workShifts]);
+  React.useEffect(() => {
+    console.log("workShifts", workShifts);
+  }, [workShifts]);
 
   return (
     <div className="h-full w-full bg-white">
