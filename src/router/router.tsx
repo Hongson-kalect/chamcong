@@ -8,6 +8,7 @@ import AppLayout from "@/layout/app.layout";
 import DieuKhoan from "@/pages/dieukhoan/dieukhoan";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "@/pages/home/home";
+import CreateWorkPage from "@/pages/taobangcong/taobangcong";
 
 const Router = () => {
   const queryClient = new QueryClient();
@@ -24,6 +25,10 @@ const Router = () => {
                   <Route path="/home" element={<HomePage />}></Route>
                   <Route path="/start" element={<StartPage />}></Route>
                   <Route path="/dieu-khoan" element={<DieuKhoan />}></Route>
+                  <Route
+                    path="/create-work-page"
+                    element={<CreateWorkPage />}
+                  ></Route>
                   <Route
                     path="/get-permisson"
                     element={<GetPerMissonPage />}
