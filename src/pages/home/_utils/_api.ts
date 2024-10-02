@@ -5,10 +5,10 @@ import { useCallback } from "react";
 
 export const useHomeApi = () => {
   const { userInfo, setUserInfo } = useAppStore();
-  const { httpGet, httpPost } = useAxios();
+  const { httpGet, httpPost, api } = useAxios();
 
   const login = useCallback(async () => {
-    const res = await httpPost("zlogin", { zalo_id: userInfo.zalo_id });
+    const res = await api.post("zlogin", { zalo_id: userInfo.zalo_id });
     return res.data;
   }, [userInfo]);
 
@@ -19,11 +19,31 @@ export const useHomeApi = () => {
 
   const createWorkShift = useCallback(
     async (props: { tencongty: string; chucvu: string }) => {
-      const res = await httpPost("tuchamcong", { props });
+      const res = await httpPost("tuchamcong/", { props });
       return res.data;
     },
     [userInfo]
   );
 
-  return { createWorkShift, getWorkShift };
+  const checkDate = useCallback(
+    async (props: {
+      ca: string;
+      kieungay: string;
+      giovao: string;
+      giora: string;
+      tuchamcong: number;
+    }) => {
+      const res = await httpPost("tuchamcongtay/", props);
+      return res.data;
+    },
+    [userInfo]
+  );
+  const offDate = useCallback(
+    async (props: { kieunghi: string; tuchamcong: number }) => {
+      const res = await httpPost("tuchamcongtay/", props);
+      return res.data;
+    },
+    [userInfo]
+  );
+  return { createWorkShift, getWorkShift, checkDate, offDate };
 };

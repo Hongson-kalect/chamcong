@@ -9,6 +9,9 @@ import DieuKhoan from "@/pages/dieukhoan/dieukhoan";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import HomePage from "@/pages/home/home";
 import CreateWorkPage from "@/pages/taobangcong/taobangcong";
+import { ToastContainer } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const Router = () => {
   const queryClient = new QueryClient();
@@ -38,6 +41,7 @@ const Router = () => {
             </ZMPRouter>
           </QueryClientProvider>
         </SnackbarProvider>
+        <ToastContainer />
       </App>
     </RecoilRoot>
   );

@@ -12,10 +12,27 @@ export const useAxios = () => {
   );
 
   useEffect(() => {
+    // api.interceptors.response.use(
+    //   (response) => {
+    //     const endTime = new Date();
+    //     const duration = endTime - response.config.metadata.startTime; // Tính thời gian xử lý
+    //     console.log(`Request to ${response.config.url} took ${duration} ms`);
+    //     return response;
+    //   },
+    //   (error) => {
+    //     const endTime = new Date();
+    //     const duration = endTime - error.config.metadata.startTime; // Tính thời gian xử lý
+    //     console.error(
+    //       `Request to ${error.config.url} fails took ${duration} ms`
+    //     );
+    //     return Promise.reject(error);
+    //   }
+    // );
+
     api.interceptors.request.use(
       function (config) {
         // Do something before request is sent
-        config.headers.Authentication = "Bearer " + userInfo.access_token;
+        // config.headers.Authentication = "Bearer " + userInfo.access_token;
         return config;
       },
       function (error) {
@@ -23,6 +40,12 @@ export const useAxios = () => {
         return Promise.reject(error);
       }
     );
+  }, []);
+
+  useEffect(() => {
+    api.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${userInfo.access_token}`;
   }, [userInfo]);
 
   const httpGet = useCallback(async (pathname: string, params?: object) => {
@@ -42,7 +65,7 @@ export const useAxios = () => {
   //     return data;
   // }
 
-  return { httpGet, httpPost };
+  return { httpGet, httpPost, api };
 };
 
 export default useAxios;

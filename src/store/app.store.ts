@@ -7,6 +7,6 @@ type IAppStore = {
 };
 
 export const useAppStore = create<IAppStore>((set) => ({
-  userInfo: { avatar: "", zalo_id: "" },
+  userInfo: { avatar: "", id: "", name: "" },
   setUserInfo: (userInfo) => set({ userInfo }),
 }));

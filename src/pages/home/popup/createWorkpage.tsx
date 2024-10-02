@@ -15,6 +15,7 @@ export default function CreateWorkPage(props: ICreateWorkPageProps) {
     const data = await createWorkShift({ tencongty: name, chucvu: position });
     props.sendData(data);
   };
+
   return (
     <div className="px-2">
       <div className="bg-white rounded-lg">
