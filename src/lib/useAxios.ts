@@ -1,7 +1,9 @@
+import { useAppStore } from "@/store/app.store";
 import axios from "axios";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export const useAxios = () => {
+  const { userInfo } = useAppStore();
   const baseUrl = useMemo(() => {
     return "https://ipays.vn/api";
   }, []);
@@ -9,13 +11,29 @@ export const useAxios = () => {
     axios.create({ baseURL: baseUrl, timeout: 5000 })
   );
 
-  const httpPost = useCallback(async (pathname: string) => {
-    const data = await api.get(pathname);
+  useEffect(() => {
+    api.interceptors.request.use(
+      function (config) {
+        // Do something before request is sent
+        config.headers.Authentication = "Bearer " + userInfo.access_token;
+        return config;
+      },
+      function (error) {
+        // Do something with request error
+        return Promise.reject(error);
+      }
+    );
+  }, [userInfo]);
+
+  const httpGet = useCallback(async (pathname: string, params?: object) => {
+    const data = await api.get(pathname, {
+      params,
+    });
     return data;
   }, []);
 
-  const httpGet = useCallback(async (pathname: string) => {
-    const data = await api.get(pathname);
+  const httpPost = useCallback(async (pathname: string, body?: object) => {
+    const data = await api.post(pathname, body);
     return data;
   }, []);
 
@@ -24,7 +42,7 @@ export const useAxios = () => {
   //     return data;
   // }
 
-  return [httpGet, httpPost];
+  return { httpGet, httpPost };
 };
 
 export default useAxios;

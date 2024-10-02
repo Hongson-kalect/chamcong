@@ -3,27 +3,25 @@ import useAxios from "@/lib/useAxios";
 import { useAppStore } from "@/store/app.store";
 import { useCallback } from "react";
 
-export const useHomeApi = () => {
+export const useApi = () => {
   const { userInfo, setUserInfo } = useAppStore();
   const { httpGet, httpPost } = useAxios();
-
   const login = useCallback(async () => {
     const res = await httpPost("zlogin", { zalo_id: userInfo.zalo_id });
     return res.data;
   }, [userInfo]);
 
-  const getWorkShift = useCallback(async () => {
-    const res = await httpGet("tuchamcong/?page_size=1&page=1");
+  const register = useCallback(async () => {
+    const body = {
+      username: userInfo.zalo_id,
+      password: userInfo.zalo_id,
+      email: userInfo.zalo_id,
+      zalo_name: userInfo.name,
+      zalo_id: userInfo.zalo_id,
+    };
+    const res = await httpPost("register", body);
     return res.data;
   }, [userInfo]);
 
-  const createWorkShift = useCallback(
-    async (props: { tencongty: string; chucvu: string }) => {
-      const res = await httpPost("tuchamcong", { props });
-      return res.data;
-    },
-    [userInfo]
-  );
-
-  return { createWorkShift, getWorkShift };
+  return { login, register };
 };
