@@ -1,16 +1,20 @@
 import { create } from "zustand";
-import { WorkPageType } from "./_interface";
+import { WorkDateType, WorkPageType } from "./_interface";
 
 type IHomeStore = {
-  workState: null | "checked" | "dayOff";
-  setWorkState: (data: null | "checked" | "dayOff") => void;
+  workState?: "checked" | "dayOff" | null;
   workPage?: WorkPageType;
+  selectedWorkDate?: WorkDateType;
+  setWorkState: (data?: "checked" | "dayOff" | null) => void;
   setWorkPage: (data: WorkPageType) => void;
+  setSelectedWorkDate: (data: WorkDateType) => void;
 };
 
 export const useHomeStore = create<IHomeStore>((set) => ({
-  workState: null,
-  setWorkState: (data) => set({ workState: data }),
+  workState: undefined,
   workPage: undefined,
+  selectedWorkDate: undefined,
+  setWorkState: (data) => set({ workState: data || undefined }),
   setWorkPage: (data) => set({ workPage: data }),
+  setSelectedWorkDate: (data) => set({ selectedWorkDate: data }),
 }));

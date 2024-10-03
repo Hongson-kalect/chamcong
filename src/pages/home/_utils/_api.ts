@@ -1,5 +1,6 @@
 import { httpGet, httpPost } from "@/lib/axios";
 import useAxios from "@/lib/useAxios";
+import { getFirstAndLastDayOfMonth } from "@/lib/utils";
 import { useAppStore } from "@/store/app.store";
 import { useCallback } from "react";
 
@@ -11,6 +12,22 @@ export const useHomeApi = () => {
     const res = await api.post("zlogin", { zalo_id: userInfo.zalo_id });
     return res.data;
   }, [userInfo]);
+
+  const getMonthCheckInfo = useCallback(
+    async (month?: number, year?: number) => {
+      const date = new Date();
+      const { firstDay, lastDay } = getFirstAndLastDayOfMonth(
+        year || date.getFullYear(),
+        month || date.getMonth() + 1
+      );
+      const res = await httpGet("tuchamcongtay/", {
+        ngay_after: firstDay,
+        ngay_before: lastDay,
+      });
+      return res.data?.results || [];
+    },
+    [userInfo]
+  );
 
   const getWorkShift = useCallback(async () => {
     const res = await httpGet("tuchamcong/?page_size=1&page=1");
@@ -27,8 +44,8 @@ export const useHomeApi = () => {
 
   const checkDate = useCallback(
     async (props: {
-      ca: string;
-      kieungay: string;
+      ca?: number;
+      kieungay?: number;
       giovao: string;
       giora: string;
       tuchamcong: number;
@@ -39,11 +56,29 @@ export const useHomeApi = () => {
     [userInfo]
   );
   const offDate = useCallback(
-    async (props: { kieunghi: string; tuchamcong: number }) => {
+    async (props: {
+      ngaycham: string;
+      kieunghi: number;
+      tuchamcong: number;
+    }) => {
       const res = await httpPost("tuchamcongtay/", props);
       return res.data;
     },
     [userInfo]
   );
-  return { createWorkShift, getWorkShift, checkDate, offDate };
+  const cancelState = useCallback(
+    async (props: { ngaycham: string; tuchamcong: number }) => {
+      const res = await httpPost("tuchamcongtay/", props);
+      return res.data;
+    },
+    [userInfo]
+  );
+  return {
+    createWorkShift,
+    getWorkShift,
+    checkDate,
+    offDate,
+    cancelState,
+    getMonthCheckInfo,
+  };
 };

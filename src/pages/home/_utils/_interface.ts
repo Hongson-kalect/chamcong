@@ -48,3 +48,12 @@ export type WorkPageType = {
     tuchamcong: number;
   }[];
 };
+
+export type WorkDateType = {
+  ngay: string;
+  giovao: string;
+  giora: string;
+  kieuca: number;
+  kieungay: number;
+  kieunhi: number;
+};

@@ -14,23 +14,59 @@ import { PiCalendarXFill } from "react-icons/pi";
 import CheckAction from "./popup/checkAction";
 import OffAction from "./popup/offAction";
 import { useHomeStore } from "./_utils/_store";
+import { getDate } from "@/lib/utils";
+import { IoSettingsOutline } from "react-icons/io5";
+import { FaCircleXmark } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 export interface IHomePageProps {}
 
 export default function HomePage(props: IHomePageProps) {
   const navigate = useNavigate();
-  const { getWorkShift } = useHomeApi();
+  const { getWorkShift, getMonthCheckInfo, cancelState } = useHomeApi();
   const { userInfo } = useAppStore();
   const { workState, setWorkState, workPage, setWorkPage } = useHomeStore();
   const [createWorkPage, setCreateWorkPage] = React.useState(false);
-  const [action, setAction] = React.useState<"check" | "off" | "reset" | null>(
-    null
-  );
-  // const [workShift,setWorkShift] =React.useState();
+  const [action, setAction] = React.useState<
+    "check" | "editCheck" | "editOff" | "off" | "reset" | null
+  >(null);
+
+  const [loading, setLoading] = React.useState(true);
+
+  const [todayInfo, setTodayInfo] = React.useState(() => {
+    return {
+      ngay: "2024/10/3",
+      giovao: undefined,
+      giora: undefined,
+      kieuca: 0,
+      kieungay: 0,
+      kieunghi: 0,
+    };
+  });
+
+  const sendData = (workpage) => {
+    setWorkPage(workpage);
+    setCreateWorkPage(false);
+  };
+
+  const handleCancelState = async () => {
+    if (!workPage?.id) return toast.error("Chưa có bảng lương nào đc chọn");
+    try {
+      await cancelState({ ngaycham: todayInfo.ngay, tuchamcong: workPage?.id });
+      setWorkState(null);
+    } catch (error) {
+      alert("Ai cho ma huy" + JSON.stringify(error));
+    }
+  };
 
   const workShiftQuery = useQuery({
     queryFn: getWorkShift,
     queryKey: ["getWorkShift", userInfo],
+  });
+
+  const monthWorkInfo = useQuery({
+    queryFn: async () => await getMonthCheckInfo(),
+    queryKey: ["monthWorkInfo"],
   });
 
   React.useEffect(() => {
@@ -38,25 +74,38 @@ export default function HomePage(props: IHomePageProps) {
     if (workShiftQuery.status === "pending" || !workShiftQuery.data?.results)
       return; //dang load hoac load loi
     if (workShiftQuery.data?.results?.length === 0) {
-      console.log("2222", 2222);
       setCreateWorkPage(true);
     } else {
       setWorkPage(workShiftQuery.data?.results[0]);
     }
   }, [workShiftQuery.data]);
 
-  const createBasicWorkPage = async () => {
-    alert("createBasicWorkPage");
-  };
-
-  const sendData = (workpage) => {
-    setWorkPage(workpage);
-    setCreateWorkPage(false);
-  };
+  React.useEffect(() => {
+    console.log("monthWorkInfo :>> ", monthWorkInfo.data, getDate());
+    if (monthWorkInfo.isPending || !monthWorkInfo.data?.length) return;
+    const today = monthWorkInfo.data.find((item) => {
+      return (item.ngay = getDate());
+    });
+    if (today) setTodayInfo(today);
+  }, [monthWorkInfo.data]);
 
   React.useEffect(() => {
-    console.log("userInfo", userInfo);
-  }, [userInfo]);
+    if (monthWorkInfo.isPending) return;
+    setLoading(false);
+    if (todayInfo.giovao && todayInfo.giora) return setWorkState("checked");
+    if (todayInfo.kieunghi) return setWorkState("dayOff");
+    return setWorkState(null);
+  }, [todayInfo]);
+
+  React.useEffect(() => {
+    if (monthWorkInfo.isPending) return;
+    console.log("workState 1111:>> ", workState);
+  }, [loading]);
+
+  React.useEffect(() => {}, []);
+
+  if (monthWorkInfo.isPending || loading) return <div>Loading</div>;
+
   return (
     <div className="h-full">
       <div className="h-40 bg-blue-800">
@@ -83,19 +132,56 @@ export default function HomePage(props: IHomePageProps) {
               <div>Cau chui the cua mieng cua thanh niena nao do</div>
             </div>
             <div className="flex">
-              <div
-                className="h-10 flex-1 items-center justify-center flex gap-2 bg-blue-500 text-white"
-                onClick={() => setAction("check")}
-              >
-                <BsClipboardCheckFill />
-                Cham cong
-              </div>
-              <div
-                className="h-10 flex-1 items-center justify-center flex gap-2 bg-red-400 text-white"
-                onClick={() => setAction("off")}
-              >
-                <PiCalendarXFill /> Nay nghi
-              </div>
+              {workState === "checked" ? (
+                <>
+                  <div
+                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-blue-500 text-white"
+                    onClick={() => setAction("editCheck")}
+                  >
+                    <IoSettingsOutline />
+                    Sửa thời gian
+                  </div>
+                  <div
+                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-red-400 text-white"
+                    onClick={() => handleCancelState()}
+                  >
+                    <FaCircleXmark />
+                    Hủy chấm
+                  </div>
+                </>
+              ) : workState === "dayOff" ? (
+                <>
+                  <div
+                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-red-400 text-white"
+                    onClick={() => setAction("editOff")}
+                  >
+                    <BsClipboardCheckFill />
+                    Sửa kiểu nghỉ
+                  </div>
+                  <div
+                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-blue-500 text-white"
+                    onClick={() => handleCancelState()}
+                  >
+                    <PiCalendarXFill /> Thôi, chê
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-blue-500 text-white"
+                    onClick={() => setAction("check")}
+                  >
+                    <BsClipboardCheckFill />
+                    Cham cong
+                  </div>
+                  <div
+                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-red-400 text-white"
+                    onClick={() => setAction("off")}
+                  >
+                    <PiCalendarXFill /> Nay nghi
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -114,7 +200,17 @@ export default function HomePage(props: IHomePageProps) {
           <CheckAction onClose={() => alert("close popup")} />
         </PopupWrapper>
       ) : null}
+      {action === "editCheck" ? (
+        <PopupWrapper onClose={() => setAction(null)}>
+          <CheckAction onClose={() => alert("close popup")} />
+        </PopupWrapper>
+      ) : null}
       {action === "off" ? (
+        <PopupWrapper onClose={() => setAction(null)}>
+          <OffAction onClose={() => alert("close popup")} />
+        </PopupWrapper>
+      ) : null}
+      {action === "editOff" ? (
         <PopupWrapper onClose={() => setAction(null)}>
           <OffAction onClose={() => alert("close popup")} />
         </PopupWrapper>

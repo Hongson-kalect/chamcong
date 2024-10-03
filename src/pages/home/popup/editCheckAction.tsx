@@ -6,11 +6,11 @@ import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { getDate } from "@/lib/utils";
 
-export interface ICheckActionProps {
+export interface IEditCheckActionProps {
   onClose: () => void;
 }
 
-export default function CheckAction(props: ICheckActionProps) {
+export default function EditCheckAction(props: IEditCheckActionProps) {
   //Lay duoc du lieu bang cong hien tai cua nguoi dung
   const { setWorkState, workPage, setWorkPage } = useHomeStore();
   const { checkDate } = useHomeApi();
@@ -41,7 +41,7 @@ export default function CheckAction(props: ICheckActionProps) {
     return [ca, kieungay];
   }, [workPage]);
 
-  const handleCheckAction = async () => {
+  const handleEditCheckAction = async () => {
     console.log("workPage", workPage);
     if (!workPage) return toast.error("Chua co bang cong nao");
     if (!formValue.ca || !formValue.ca)
@@ -121,7 +121,7 @@ export default function CheckAction(props: ICheckActionProps) {
         ></textarea>
         <button
           className="w-full h-10 bg-blue-600 text-lg text-white mt-4 rounded-lg"
-          onClick={handleCheckAction}
+          onClick={handleEditCheckAction}
         >
           Xac nhan
         </button>

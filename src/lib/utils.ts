@@ -57,3 +57,41 @@ export const checkUserInfo = async () => {
     return false;
   }
 };
+
+export const getDate = (date?: Date, format?: "date" | "datetime") => {
+  if (!date) date = new Date();
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, "0");
+  const hour = String(date.getHours()).padStart(2, "0");
+  const minute = String(date.getMinutes()).padStart(2, "0");
+
+  const datetime = `${year}-${month}-${day}T-${hour}-${minute}`;
+  const dateOnly = `${year}-${month}-${day}`;
+  if (format === "datetime") return datetime;
+  return dateOnly;
+};
+
+export function getFirstAndLastDayOfMonth(year, month) {
+  // Tạo đối tượng Date cho ngày đầu tiên của tháng
+  let firstDay = new Date(Date.UTC(year, month - 1, 1));
+
+  // Tạo đối tượng Date cho ngày cuối cùng của tháng
+  let lastDay = new Date(Date.UTC(year, month, 0));
+
+  // Định dạng ngày theo yyyy-mm-dd
+  let options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "UTC",
+  };
+  let firstDayFormatted = firstDay.toLocaleDateString("en-CA", options);
+  let lastDayFormatted = lastDay.toLocaleDateString("en-CA", options);
+
+  return {
+    firstDay: firstDayFormatted,
+    lastDay: lastDayFormatted,
+  };
+}
