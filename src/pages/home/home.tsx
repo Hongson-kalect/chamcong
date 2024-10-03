@@ -18,6 +18,8 @@ import { getDate } from "@/lib/utils";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaCircleXmark } from "react-icons/fa6";
 import { toast } from "react-toastify";
+import EditCheckAction from "./popup/editCheckAction";
+import BangCong from "./ui/bangcong";
 
 export interface IHomePageProps {}
 
@@ -31,16 +33,15 @@ export default function HomePage(props: IHomePageProps) {
     "check" | "editCheck" | "editOff" | "off" | "reset" | null
   >(null);
 
-  const [loading, setLoading] = React.useState(true);
-
   const [todayInfo, setTodayInfo] = React.useState(() => {
     return {
       ngay: "2024/10/3",
       giovao: undefined,
       giora: undefined,
-      kieuca: 0,
+      ca: 0,
       kieungay: 0,
       kieunghi: 0,
+      id: 0,
     };
   });
 
@@ -51,8 +52,12 @@ export default function HomePage(props: IHomePageProps) {
 
   const handleCancelState = async () => {
     if (!workPage?.id) return toast.error("Chưa có bảng lương nào đc chọn");
+    if (!todayInfo?.id) return toast.error("Chưa có ngay nào đc chọn");
     try {
-      await cancelState({ ngaycham: todayInfo.ngay, tuchamcong: workPage?.id });
+      if (window.confirm("Bạn có chắc muốn hủy?"))
+        await cancelState({
+          machamcong: todayInfo.id,
+        });
       setWorkState(null);
     } catch (error) {
       alert("Ai cho ma huy" + JSON.stringify(error));
@@ -91,20 +96,18 @@ export default function HomePage(props: IHomePageProps) {
 
   React.useEffect(() => {
     if (monthWorkInfo.isPending) return;
-    setLoading(false);
     if (todayInfo.giovao && todayInfo.giora) return setWorkState("checked");
     if (todayInfo.kieunghi) return setWorkState("dayOff");
     return setWorkState(null);
   }, [todayInfo]);
 
-  React.useEffect(() => {
-    if (monthWorkInfo.isPending) return;
-    console.log("workState 1111:>> ", workState);
-  }, [loading]);
+  console.log(
+    "monthWorkInfo.isPending || loading",
+    todayInfo,
+    monthWorkInfo.isPending
+  );
 
-  React.useEffect(() => {}, []);
-
-  if (monthWorkInfo.isPending || loading) return <div>Loading</div>;
+  if (monthWorkInfo.isPending) return <div>Loading</div>;
 
   return (
     <div className="h-full">
@@ -185,6 +188,9 @@ export default function HomePage(props: IHomePageProps) {
             </div>
           </div>
         </div>
+        <div className="px-4 mt-2">
+          <BangCong dayInfos={monthWorkInfo.data} year={2024} month={4} />
+        </div>
       </div>
 
       {/* Popup */}
@@ -197,12 +203,18 @@ export default function HomePage(props: IHomePageProps) {
 
       {action === "check" ? (
         <PopupWrapper onClose={() => setAction(null)}>
-          <CheckAction onClose={() => alert("close popup")} />
+          <CheckAction onClose={() => setAction(null)} />
         </PopupWrapper>
       ) : null}
       {action === "editCheck" ? (
         <PopupWrapper onClose={() => setAction(null)}>
-          <CheckAction onClose={() => alert("close popup")} />
+          <EditCheckAction
+            todayInfo={todayInfo}
+            onClose={() => {
+              setAction(null);
+              monthWorkInfo.refetch();
+            }}
+          />
         </PopupWrapper>
       ) : null}
       {action === "off" ? (

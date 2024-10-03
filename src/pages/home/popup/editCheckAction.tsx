@@ -5,24 +5,21 @@ import { useHomeApi } from "../_utils/_api";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { getDate } from "@/lib/utils";
+import { WorkDateType } from "../_utils/_interface";
 
 export interface IEditCheckActionProps {
+  todayInfo?: WorkDateType;
   onClose: () => void;
 }
 
-export default function EditCheckAction(props: IEditCheckActionProps) {
+export default function EditCheckAction({
+  todayInfo,
+  onClose,
+}: IEditCheckActionProps) {
+  const [info, setInfo] = React.useState(JSON.parse(JSON.stringify(todayInfo)));
   //Lay duoc du lieu bang cong hien tai cua nguoi dung
   const { setWorkState, workPage, setWorkPage } = useHomeStore();
-  const { checkDate } = useHomeApi();
-
-  const [formValue, setFormValue] = React.useState({
-    ca: 0,
-    kieungay: 0,
-    ngay: getDate(),
-    giovao: getDate(undefined, "date") + "T08:00",
-    giora: getDate(undefined, "date") + "T17:00",
-    ghichu: "",
-  });
+  const { editCheckDate } = useHomeApi();
 
   const [cas, kieungays] = React.useMemo(() => {
     const ca = workPage?.kieucas.map((kieuca) => ({
@@ -33,28 +30,26 @@ export default function EditCheckAction(props: IEditCheckActionProps) {
       label: kieungay.tenloaingay,
       value: kieungay.id,
     }));
-    setFormValue({
-      ...formValue,
-      ca: ca?.[0].value || 0,
-      kieungay: kieungay?.[0].value || 0,
-    });
     return [ca, kieungay];
   }, [workPage]);
 
+  console.log("info", info, todayInfo, cas, kieungays);
+
   const handleEditCheckAction = async () => {
-    console.log("workPage", workPage);
-    if (!workPage) return toast.error("Chua co bang cong nao");
-    if (!formValue.ca || !formValue.ca)
-      return toast.error("Hay chon kieu ca va kieu ngay");
-    await checkDate({ ...formValue, tuchamcong: workPage.id });
-    setWorkState("checked");
+    try {
+      console.log("workPage", workPage);
+      if (!workPage) return toast.error("Chua co bang cong nao");
+      if (!todayInfo?.ca || !todayInfo.kieungay)
+        return toast.error("Hay chon kieu ca va kieu ngay");
+      await editCheckDate({ ...info, tuchamcong: workPage.id });
+      setWorkState("checked");
+      toast.success("Sua du lieu thanh cong");
 
-    props.onClose();
+      onClose();
+    } catch (error) {
+      toast.error("Sua du lieu khong thanh cong");
+    }
   };
-
-  React.useEffect(() => {
-    setFormValue({ ...formValue, ngay: formValue.giovao.slice(0, 10) });
-  }, [formValue.giovao]);
 
   return (
     <div className="px-4">
@@ -65,18 +60,18 @@ export default function EditCheckAction(props: IEditCheckActionProps) {
           <p>Ca lam</p>
           <Select
             className="w-1/2"
-            value={formValue.ca}
-            onChange={(value) => setFormValue({ ...formValue, ca: value })}
+            value={info?.ca}
+            onChange={(value) => {
+              setInfo({ ...info, kieuca: value });
+            }}
             options={cas || []}
           />
         </div>
         <div className="flex items-center justify-center gap-2 mt-2">
           <p>Kieu ngay</p>
           <Select
-            value={formValue.kieungay}
-            onChange={(value) =>
-              setFormValue({ ...formValue, kieungay: value })
-            }
+            value={info.kieungay}
+            onChange={(value) => setInfo({ ...info, kieungay: value })}
             className="w-1/2"
             options={kieungays || []}
           />
@@ -86,10 +81,10 @@ export default function EditCheckAction(props: IEditCheckActionProps) {
           <input
             type="datetime-local"
             className="w-1/2"
-            value={formValue.giovao}
+            value={info?.giovao.slice(0, 16)}
             onChange={(value) =>
-              setFormValue({
-                ...formValue,
+              setInfo({
+                ...info,
                 giovao: value.target.value,
               })
             }
@@ -101,10 +96,10 @@ export default function EditCheckAction(props: IEditCheckActionProps) {
           <input
             type="datetime-local"
             className="w-1/2"
-            value={formValue.giora}
+            value={info?.giora.slice(0, 16)}
             onChange={(value) =>
-              setFormValue({
-                ...formValue,
+              setInfo({
+                ...info,
                 giora: value.target.value,
               })
             }
@@ -112,10 +107,8 @@ export default function EditCheckAction(props: IEditCheckActionProps) {
         </div>
 
         <textarea
-          value={formValue.ghichu}
-          onChange={(e) =>
-            setFormValue({ ...formValue, ghichu: e.target.value })
-          }
+          value={info.ghichu}
+          onChange={(e) => setInfo({ ...info, ghichu: e.target.value })}
           placeholder="ghi chu"
           className=" w-full shadow shadow-red-400"
         ></textarea>

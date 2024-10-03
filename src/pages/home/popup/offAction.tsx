@@ -30,16 +30,16 @@ export default function OffAction(props: IOffActionProps) {
       { tenca: "Phep om", id: 2 },
       { tenca: "Nghi khong phep", id: 3 },
     ];
-    const kieunhi = kieucas.map((kieuca) => ({
+    const kieunghi = kieucas.map((kieuca) => ({
       label: kieuca.tenca,
       value: kieuca.id,
     }));
     setFormValue({
       ...formValue,
-      kieunghi: kieunhi?.[0].value || 0,
+      kieunghi: kieunghi?.[0].value || 0,
     });
-    return kieunhi;
-    // const kieunhi = workPage?.kieucas.map((kieuca) => ({
+    return kieunghi;
+    // const kieunghi = workPage?.kieucas.map((kieuca) => ({
     //   label: kieuca.tenca,
     //   value: kieuca.id,
     // }));
@@ -47,7 +47,7 @@ export default function OffAction(props: IOffActionProps) {
     //   ...formValue,
     //   kieunghi: kieunghis?.[0].value || 0,
     // });
-    // return [kieunhi];
+    // return [kieunghi];
   }, [workPage]);
 
   return (

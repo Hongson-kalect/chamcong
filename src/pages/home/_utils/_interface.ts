@@ -53,7 +53,7 @@ export type WorkDateType = {
   ngay: string;
   giovao: string;
   giora: string;
-  kieuca: number;
+  ca: number;
   kieungay: number;
-  kieunhi: number;
+  kieunghi: number;
 };

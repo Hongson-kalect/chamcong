@@ -12,6 +12,7 @@ import "zmp-ui/zaui.css";
 
 // Your stylesheet
 import "css/app.scss";
+import "react-calendar/dist/Calendar.css";
 
 // Expose app configuration
 import appConfig from "../app-config.json";

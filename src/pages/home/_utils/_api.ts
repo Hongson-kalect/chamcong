@@ -6,7 +6,7 @@ import { useCallback } from "react";
 
 export const useHomeApi = () => {
   const { userInfo, setUserInfo } = useAppStore();
-  const { httpGet, httpPost, api } = useAxios();
+  const { httpGet, httpPost, httpDelete, httpPut, httpPatch, api } = useAxios();
 
   const login = useCallback(async () => {
     const res = await api.post("zlogin", { zalo_id: userInfo.zalo_id });
@@ -55,6 +55,20 @@ export const useHomeApi = () => {
     },
     [userInfo]
   );
+  const editCheckDate = useCallback(
+    async (props: {
+      ca?: number;
+      kieungay?: number;
+      giovao: string;
+      giora: string;
+      tuchamcong: number;
+      id: number;
+    }) => {
+      const res = await httpPatch(`tuchamcongtay/${props.id}/`, props);
+      return res.data;
+    },
+    [userInfo]
+  );
   const offDate = useCallback(
     async (props: {
       ngaycham: string;
@@ -66,9 +80,20 @@ export const useHomeApi = () => {
     },
     [userInfo]
   );
+  const editOffDate = useCallback(
+    async (props: {
+      ngaycham: string;
+      kieunghi: number;
+      tuchamcong: number;
+    }) => {
+      const res = await httpPut("tuchamcongtay/", props);
+      return res.data;
+    },
+    [userInfo]
+  );
   const cancelState = useCallback(
-    async (props: { ngaycham: string; tuchamcong: number }) => {
-      const res = await httpPost("tuchamcongtay/", props);
+    async (props: { machamcong: number }) => {
+      const res = await httpDelete(`tuchamcongtay/${props.machamcong}/`);
       return res.data;
     },
     [userInfo]
@@ -77,6 +102,8 @@ export const useHomeApi = () => {
     createWorkShift,
     getWorkShift,
     checkDate,
+    editCheckDate,
+    editOffDate,
     offDate,
     cancelState,
     getMonthCheckInfo,

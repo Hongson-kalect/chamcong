@@ -59,13 +59,28 @@ export const useAxios = () => {
     const data = await api.post(pathname, body);
     return data;
   }, []);
+  const httpDelete = useCallback(async (pathname: string, params?: object) => {
+    const data = await api.delete(pathname, {
+      params,
+    });
+    return data;
+  }, []);
+
+  const httpPut = useCallback(async (pathname: string, body?: object) => {
+    const data = await api.put(pathname, body);
+    return data;
+  }, []);
+  const httpPatch = useCallback(async (pathname: string, body?: object) => {
+    const data = await api.patch(pathname, body);
+    return data;
+  }, []);
 
   // const httpGet = async (pathname: string) => {
   //     const data = await api.get(pathname);
   //     return data;
   // }
 
-  return { httpGet, httpPost, api };
+  return { httpGet, httpPost, httpDelete, httpPut, httpPatch, api };
 };
 
 export default useAxios;
