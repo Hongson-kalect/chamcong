@@ -20,11 +20,16 @@ import { FaCircleXmark } from "react-icons/fa6";
 import { toast } from "react-toastify";
 import EditCheckAction from "./popup/editCheckAction";
 import BangCong from "./ui/bangcong";
+import { homeQuery } from "./_utils/_query";
+import TodayStatus from "./ui/todayStatus";
 
 export interface IHomePageProps {}
 
 export default function HomePage(props: IHomePageProps) {
   const navigate = useNavigate();
+  const { workShiftQuery: workShifts, monthWorkQuery: monthWorkInfo } =
+    homeQuery();
+  // const workShifts = workShiftQuery();
   const { getWorkShift, getMonthCheckInfo, cancelState } = useHomeApi();
   const { userInfo } = useAppStore();
   const { workState, setWorkState, workPage, setWorkPage } = useHomeStore();
@@ -64,26 +69,15 @@ export default function HomePage(props: IHomePageProps) {
     }
   };
 
-  const workShiftQuery = useQuery({
-    queryFn: getWorkShift,
-    queryKey: ["getWorkShift", userInfo],
-  });
-
-  const monthWorkInfo = useQuery({
-    queryFn: async () => await getMonthCheckInfo(),
-    queryKey: ["monthWorkInfo"],
-  });
-
   React.useEffect(() => {
-    console.log("workPage", workShiftQuery);
-    if (workShiftQuery.status === "pending" || !workShiftQuery.data?.results)
-      return; //dang load hoac load loi
-    if (workShiftQuery.data?.results?.length === 0) {
+    console.log("workPage", workShifts);
+    if (workShifts.status === "pending" || !workShifts.data?.results) return; //dang load hoac load loi
+    if (workShifts.data?.results?.length === 0) {
       setCreateWorkPage(true);
     } else {
-      setWorkPage(workShiftQuery.data?.results[0]);
+      setWorkPage(workShifts.data?.results[0]);
     }
-  }, [workShiftQuery.data]);
+  }, [workShifts.data]);
 
   React.useEffect(() => {
     console.log("monthWorkInfo :>> ", monthWorkInfo.data, getDate());
@@ -125,69 +119,7 @@ export default function HomePage(props: IHomePageProps) {
             <div className="h-10 w-4 rounded-lg bg-red-400" />
           </div>
         </div>
-        <div className="px-2">
-          <div className="bg-white rounded-t-lg h-40 shadow shadow-gray-700  flex flex-col">
-            <div
-              className="info flex flex-col flex-1 py-4 items-center justify-center gap-2"
-              style={{ borderBottom: "1px solid #aaa" }}
-            >
-              <img src={userInfo.avatar} className="h-12 w-12" />
-              <div>Cau chui the cua mieng cua thanh niena nao do</div>
-            </div>
-            <div className="flex">
-              {workState === "checked" ? (
-                <>
-                  <div
-                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-blue-500 text-white"
-                    onClick={() => setAction("editCheck")}
-                  >
-                    <IoSettingsOutline />
-                    Sửa thời gian
-                  </div>
-                  <div
-                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-red-400 text-white"
-                    onClick={() => handleCancelState()}
-                  >
-                    <FaCircleXmark />
-                    Hủy chấm
-                  </div>
-                </>
-              ) : workState === "dayOff" ? (
-                <>
-                  <div
-                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-red-400 text-white"
-                    onClick={() => setAction("editOff")}
-                  >
-                    <BsClipboardCheckFill />
-                    Sửa kiểu nghỉ
-                  </div>
-                  <div
-                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-blue-500 text-white"
-                    onClick={() => handleCancelState()}
-                  >
-                    <PiCalendarXFill /> Thôi, chê
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div
-                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-blue-500 text-white"
-                    onClick={() => setAction("check")}
-                  >
-                    <BsClipboardCheckFill />
-                    Cham cong
-                  </div>
-                  <div
-                    className="h-10 flex-1 items-center justify-center flex gap-2 bg-red-400 text-white"
-                    onClick={() => setAction("off")}
-                  >
-                    <PiCalendarXFill /> Nay nghi
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+        <TodayStatus />
         <div className="px-4 mt-2">
           <BangCong dayInfos={monthWorkInfo.data} year={2024} month={4} />
         </div>

@@ -42,7 +42,6 @@ export default function CheckAction(props: ICheckActionProps) {
   }, [workPage]);
 
   const handleCheckAction = async () => {
-    console.log("workPage", workPage);
     if (!workPage) return toast.error("Chua co bang cong nao");
     if (!formValue.ca || !formValue.ca)
       return toast.error("Hay chon kieu ca va kieu ngay");

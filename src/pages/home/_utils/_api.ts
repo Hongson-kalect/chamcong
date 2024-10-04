@@ -31,7 +31,7 @@ export const useHomeApi = () => {
 
   const getWorkShift = useCallback(async () => {
     const res = await httpGet("tuchamcong/?page_size=1&page=1");
-    return res.data;
+    return res?.data?.results[0];
   }, [userInfo]);
 
   const createWorkShift = useCallback(
