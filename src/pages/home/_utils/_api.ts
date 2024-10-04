@@ -46,6 +46,7 @@ export const useHomeApi = () => {
     async (props: {
       ca?: number;
       kieungay?: number;
+      ngay: string;
       giovao: string;
       giora: string;
       tuchamcong: number;
@@ -70,23 +71,15 @@ export const useHomeApi = () => {
     [userInfo]
   );
   const offDate = useCallback(
-    async (props: {
-      ngaycham: string;
-      kieunghi: number;
-      tuchamcong: number;
-    }) => {
-      const res = await httpPost("tuchamcongtay/", props);
+    async (props: { ngay: string; kieungay?: number; tuchamcong: number }) => {
+      const res = await httpPost("tuchamcongtay/", { ...props, dilam: false });
       return res.data;
     },
     [userInfo]
   );
   const editOffDate = useCallback(
-    async (props: {
-      ngaycham: string;
-      kieunghi: number;
-      tuchamcong: number;
-    }) => {
-      const res = await httpPut("tuchamcongtay/", props);
+    async (props: { ngay: string; kieungay: number; tuchamcong: number }) => {
+      const res = await httpPut("tuchamcongtay/", { ...props, dilam: false });
       return res.data;
     },
     [userInfo]

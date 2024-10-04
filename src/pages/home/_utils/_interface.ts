@@ -64,4 +64,5 @@ export type WorkDateType = {
   kieungay: number;
   kieunghi: number;
   ngaycham: string;
+  dilam: boolean;
 };

@@ -22,6 +22,7 @@ import EditCheckAction from "./popup/editCheckAction";
 import BangCong from "./ui/bangcong";
 import { homeQuery } from "./_utils/_query";
 import TodayStatus from "./ui/todayStatus";
+import DayCheck from "./popup/dayCheck";
 
 export interface IHomePageProps {}
 
@@ -32,6 +33,8 @@ export default function HomePage(props: IHomePageProps) {
   // const workShifts = workShiftQuery();
   const { getWorkShift, getMonthCheckInfo, cancelState } = useHomeApi();
   const { userInfo } = useAppStore();
+
+  const [dayCheckPopup, setDayCheckPopup] = React.useState(false);
   const { workState, setWorkState, workPage, setWorkPage } = useHomeStore();
   const [createWorkPage, setCreateWorkPage] = React.useState(false);
   const [action, setAction] = React.useState<
@@ -121,13 +124,17 @@ export default function HomePage(props: IHomePageProps) {
         </div>
         <TodayStatus />
         <div className="px-4 mt-2">
-          <BangCong dayInfos={monthWorkInfo.data} year={2024} month={4} />
+          <BangCong
+            dayInfos={monthWorkInfo.data}
+            year={2024}
+            month={new Date().getMonth()}
+          />
         </div>
       </div>
 
       {/* Popup */}
 
-      {createWorkPage ? (
+      {/* {createWorkPage ? (
         <PopupWrapper onClose={() => alert("close popup")}>
           <CreateWorkPage sendData={sendData} />
         </PopupWrapper>
@@ -158,7 +165,7 @@ export default function HomePage(props: IHomePageProps) {
         <PopupWrapper onClose={() => setAction(null)}>
           <OffAction onClose={() => alert("close popup")} />
         </PopupWrapper>
-      ) : null}
+      ) : null} */}
     </div>
   );
 }

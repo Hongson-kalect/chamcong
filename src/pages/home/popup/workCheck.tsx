@@ -5,6 +5,7 @@ import { useHomeStore } from "../_utils/_store";
 import { DatePicker, Select } from "zmp-ui";
 import { useHomeApi } from "../_utils/_api";
 import { toast } from "react-toastify";
+import { getDate } from "@/lib/utils";
 
 export interface IWorkCheckProps {
   todayState?: "checked" | "dayOff" | "";
@@ -38,57 +39,72 @@ export default function WorkCheck(props: IWorkCheckProps) {
   };
 
   const handleCheckAction = async () => {
-    if (props.todayState === "") {
-      if (!workShiftQuery.data?.id) return toast.error("Chua co bang cong nao");
-      if (!workInfo.ca || !workInfo.kieungay)
-        return toast.error("Hay chon kieu ca va kieu ngay");
-      await checkDate({ ...workInfo, tuchamcong: workShiftQuery.data?.id });
-    } else if (props.todayState === "checked") {
-      if (!workShiftQuery.data?.id) return toast.error("Chua co bang cong nao");
-      if (!workInfo.ca || !workInfo.kieungay)
-        return toast.error("Hay chon kieu ca va kieu ngay");
+    console.log(workInfo, workShiftQuery.data?.id);
+    if (!workShiftQuery.data?.id) return toast.error("Chua co bang cong nao");
+
+    if (props.todayInfo?.dilam === true) {
       await editCheckDate({ ...workInfo, tuchamcong: workShiftQuery.data?.id });
-    } else if (props.todayState === "dayOff") {
-      if (!workShiftQuery.data?.id) return toast.error("Chua co bang cong nao");
-      if (!workInfo.ca || !workInfo.kieungay)
-        return toast.error("Hay chon kieu ca va kieu ngay");
+    } else if (props.todayInfo?.dilam === false) {
       await editOffDate({
-        kieunghi: workInfo.kieunghi,
-        ngaycham: workInfo.ngaycham,
+        kieungay: workInfo.kieunghi,
+        ngay: workInfo.ngaycham,
         tuchamcong: workShiftQuery.data?.id,
       });
-    }
+    } else
+      await checkDate({ ...workInfo, tuchamcong: workShiftQuery.data?.id });
 
     props.onClose();
   };
+
+  React.useEffect(() => {
+    //gan gio mac dinh ,cac thu fua vao ca
+    console.log("work", workInfo);
+    if (!kieucas?.length || !kieungays?.length) return;
+
+    if (!workInfo.ca) {
+      setWorkInfo((prev) => ({ ...prev, ca: kieucas[0]?.id }));
+    }
+    if (!workInfo.kieungay) {
+      setWorkInfo((prev) => ({ ...prev, kieungay: kieungays[0]?.id }));
+    }
+    if (!workInfo.ngay) {
+      setWorkInfo((prev) => ({ ...prev, ngay: getDate() }));
+    }
+    if (!workInfo.giovao) {
+      setWorkInfo((prev) => ({ ...prev, giovao: getDate() + "T08:00" }));
+    }
+    if (!workInfo.giora) {
+      setWorkInfo((prev) => ({ ...prev, giora: getDate() + "T17:00" }));
+    }
+  }, [kieucas, kieungays]);
 
   console.log("kieucas, kieungays :>> ", kieucas, kieungays);
 
   return (
     <div className="px-4">
       <div className="bg-white rounded-lg p-2">
-        {props.todayState === "" ? (
-          <Check
-            kieucas={kieucas}
-            kieungays={kieungays}
-            workInfo={workInfo}
-            setWorkInfo={setWorkInfo}
-          />
-        ) : props.todayState === "checked" ? (
+        {props.todayInfo?.dilam === true ? (
           <UpdateCheck
             kieucas={kieucas}
             kieungays={kieungays}
             workInfo={workInfo}
             setWorkInfo={setWorkInfo}
           />
-        ) : props.todayState === "dayOff" ? (
+        ) : props.todayInfo?.dilam === false ? (
           <UpdateOff
             cas={kieucas}
             kieungays={kieungays}
             workInfo={workInfo}
             setWorkInfo={setWorkInfo}
           />
-        ) : null}
+        ) : (
+          <Check
+            kieucas={kieucas}
+            kieungays={kieungays}
+            workInfo={workInfo}
+            setWorkInfo={setWorkInfo}
+          />
+        )}
 
         <button
           className="w-full h-10 bg-blue-600 text-lg text-white mt-4 rounded-lg"
@@ -125,7 +141,7 @@ const Check = ({ kieucas, workInfo, setWorkInfo, kieungays }) => {
           <Select
             className="w-1/2"
             defaultValue={kieungays?.[0]?.id}
-            value={workInfo.kieuca}
+            value={workInfo.kieungay}
             onChange={(value) => setWorkInfo({ ...workInfo, kieungay: value })}
           >
             {kieungays.map((item, index) => {
@@ -140,7 +156,7 @@ const Check = ({ kieucas, workInfo, setWorkInfo, kieungays }) => {
           <input
             type="datetime-local"
             className="w-1/2"
-            value={workInfo?.giovao?.slice(0, 16)}
+            value={workInfo?.giovao?.slice(0, 16) || getDate() + "T08:00"}
             onChange={(value) =>
               setWorkInfo({
                 ...workInfo,
@@ -155,7 +171,7 @@ const Check = ({ kieucas, workInfo, setWorkInfo, kieungays }) => {
           <input
             type="datetime-local"
             className="w-1/2"
-            value={workInfo?.giora?.slice(0, 16) || wo}
+            value={workInfo?.giora?.slice(0, 16) || getDate() + "T17:00"}
             onChange={(value) =>
               setWorkInfo({
                 ...workInfo,
@@ -198,7 +214,7 @@ const UpdateCheck = ({ kieucas, workInfo, setWorkInfo, kieungays }) => {
         <Select
           className="w-1/2"
           defaultValue={kieungays?.[0]?.id}
-          value={workInfo.kieuca}
+          value={workInfo.kieungay}
           onChange={(value) => setWorkInfo({ ...workInfo, kieungay: value })}
         >
           {kieungays.map((item, index) => {
@@ -213,7 +229,7 @@ const UpdateCheck = ({ kieucas, workInfo, setWorkInfo, kieungays }) => {
         <input
           type="datetime-local"
           className="w-1/2"
-          value={workInfo.giovao.slice(0, 16)}
+          value={workInfo.giovao.slice(0, 16) || getDate() + "T08:00"}
           onChange={(value) =>
             setWorkInfo({
               ...workInfo,
@@ -228,7 +244,7 @@ const UpdateCheck = ({ kieucas, workInfo, setWorkInfo, kieungays }) => {
         <input
           type="datetime-local"
           className="w-1/2"
-          value={workInfo.giora.slice(0, 16)}
+          value={workInfo.giora.slice(0, 16) || getDate() + "T17:00"}
           onChange={(value) =>
             setWorkInfo({
               ...workInfo,
@@ -253,11 +269,11 @@ const UpdateOff = ({ cas, workInfo, setWorkInfo, kieungays }) => {
       <div className="text-center text-xl font-medium">Nay nghi</div>
 
       <div className="flex items-center justify-center gap-2 mt-2">
-        <p>Kieu ngay</p>
+        <p>Kieu nghi</p>
         <Select
           className="w-1/2"
           defaultValue={kieungays?.[0]?.id}
-          value={workInfo.kieuca}
+          value={workInfo.kieungay}
           onChange={(value) => setWorkInfo({ ...workInfo, kieungay: value })}
         >
           {kieungays.map((item, index) => {

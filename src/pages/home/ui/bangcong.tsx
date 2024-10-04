@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import styled from "styled-components";
 import { WorkDateType } from "../_utils/_interface";
 import { getDate } from "@/lib/utils";
+import { PopupWrapper } from "@/pages/taobangcong/popup/workShiftDetail";
+import DayCheck from "../popup/dayCheck";
 
 const StyledBangCong = styled.div`
   .calendar {
@@ -101,40 +103,59 @@ const BangCong = ({ dayInfos, year, month }) => {
 
     return weeks;
   };
-
   const weeks = getWeeks();
 
+  const [dayCheckPopup, setDayCheckPopup] = React.useState(false);
+  const [selectedDate, setSelectedDate] = React.useState<string>(null);
+
+  const handleCellSelect = (date: Date) => {
+    setSelectedDate(getDate(date));
+    setDayCheckPopup(true);
+  };
+
   return (
-    <StyledBangCong>
-      <div className="calendar">
-        <div className="calendar-header">
-          <span>Mon</span>
-          <span>Tue</span>
-          <span>Wed</span>
-          <span>Thu</span>
-          <span>Fri</span>
-          <span>Sat</span>
-          <span>Sun</span>
+    <>
+      <StyledBangCong>
+        <div className="calendar">
+          <div className="calendar-header">
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+            <span>Sun</span>
+          </div>
+          <div className="calendar-grid">
+            {weeks.map((week, cellIndex) => (
+              <div key={cellIndex} className="calendar-week">
+                {week.map((day, index) => {
+                  if (cellIndex > 2 && !day) return;
+                  return (
+                    <Cell
+                      onClick={() => handleCellSelect(day)}
+                      index={index}
+                      day={day}
+                      key={index}
+                      dayInfos={dayInfos}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="calendar-grid">
-          {weeks.map((week, cellIndex) => (
-            <div key={cellIndex} className="calendar-week">
-              {week.map((day, index) => {
-                if (cellIndex > 2 && !day) return;
-                return (
-                  <Cell
-                    index={index}
-                    day={day}
-                    key={index}
-                    dayInfos={dayInfos}
-                  />
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      </div>
-    </StyledBangCong>
+      </StyledBangCong>
+
+      {dayCheckPopup ? (
+        <PopupWrapper onClose={() => setDayCheckPopup(false)}>
+          <DayCheck
+            day={selectedDate}
+            onClose={() => setDayCheckPopup(false)}
+          />
+        </PopupWrapper>
+      ) : null}
+    </>
   );
 };
 
@@ -144,21 +165,27 @@ type CellProps = {
   day: Date;
   index: number;
   dayInfos: WorkDateType[];
+  onClick: () => void;
 };
 
-const Cell = ({ day, index, dayInfos }: CellProps) => {
+const Cell = ({ day, index, dayInfos, onClick }: CellProps) => {
   const cellDate = useMemo(() => {
+    if (!day) return;
     const thisDate = dayInfos.find((item) => item.ngay === getDate(day));
     return thisDate;
   }, [dayInfos]);
+
   return (
     <div
+      onClick={onClick}
       key={index}
       className={`calendar-day ${
         index === 6 ? "!text-red-600 font-medium" : ""
       }`}
     >
       {day ? <span>{day.getDate()}</span> : <span>&nbsp;</span>}
+
+      {cellDate && <span>co data</span>}
     </div>
   );
 };
