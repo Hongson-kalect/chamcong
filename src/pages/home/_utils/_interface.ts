@@ -6,13 +6,13 @@ export type IKieuNgay = {
   ghichu: string;
   ngaycuthe: null;
   ngaytrongtuan: string;
-  cochuyencan: false;
+  cochuyencan: boolean;
 };
 
 export type IHeSo = {
   id: number;
-  loaingay: string;
-  loaica: string;
+  kieungay: number;
+  kieuca: number;
   batdau: string;
   ketthuc: string;
   heso: number;

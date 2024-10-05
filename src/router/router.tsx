@@ -12,6 +12,7 @@ import CreateWorkPage from "@/pages/taobangcong/taobangcong";
 import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
+import TrangBangCong from "@/pages/bangcong/page";
 
 const Router = () => {
   const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const Router = () => {
                 <Route path="/" element={<AppLayout />}>
                   <Route path="/" element={<HomePage />}></Route>
                   <Route path="/home" element={<HomePage />}></Route>
+                  <Route path="/bangcong" element={<TrangBangCong />}></Route>
                   <Route path="/start" element={<StartPage />}></Route>
                   <Route path="/dieu-khoan" element={<DieuKhoan />}></Route>
                   <Route

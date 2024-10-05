@@ -23,6 +23,8 @@ import BangCong from "./ui/bangcong";
 import { homeQuery } from "./_utils/_query";
 import TodayStatus from "./ui/todayStatus";
 import DayCheck from "./popup/dayCheck";
+import SideBar from "@/layout/sidebar";
+import UserHeader from "@/components/userheader";
 
 export interface IHomePageProps {}
 
@@ -32,7 +34,7 @@ export default function HomePage(props: IHomePageProps) {
     homeQuery();
   // const workShifts = workShiftQuery();
   const { getWorkShift, getMonthCheckInfo, cancelState } = useHomeApi();
-  const { userInfo } = useAppStore();
+  const { userInfo, setPopup } = useAppStore();
 
   const [dayCheckPopup, setDayCheckPopup] = React.useState(false);
   const { workState, setWorkState, workPage, setWorkPage } = useHomeStore();
@@ -108,22 +110,12 @@ export default function HomePage(props: IHomePageProps) {
 
   return (
     <div className="h-full">
+      <SideBar />
       <div className="h-40 bg-blue-800">
-        <div className="flex justify-between px-2 py-1 mb-2">
-          <div className="user flex gap-4 items-center">
-            <img className="h-10 w-10 rounded-full" src={userInfo.avatar} />
-            <div>
-              <p className="text-sm text-gray-400">Cong nhan</p>
-              <p className="text-lg text-white font-semibold">Cong ty A</p>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <img className="h-10 w-10 rounded-full" src={userInfo.avatar} />
-            <div className="h-10 w-4 rounded-lg bg-red-400" />
-          </div>
-        </div>
+        <UserHeader />
         <TodayStatus />
-        <div className="px-4 mt-2">
+        <div className="px-1 mt-4">
+          <div className="text-gray-600 font-medium text-sm">Bảng công</div>
           <BangCong
             dayInfos={monthWorkInfo.data}
             year={2024}

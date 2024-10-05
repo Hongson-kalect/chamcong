@@ -43,7 +43,6 @@ const StyledBangCong = styled.div`
     background-color: white;
   }
   .calendar-day {
-    padding: 10px 0;
     border: 1px solid #ececec;
     background-color: #fafafa;
     text-align: center;
@@ -179,13 +178,15 @@ const Cell = ({ day, index, dayInfos, onClick }: CellProps) => {
     <div
       onClick={onClick}
       key={index}
-      className={`calendar-day ${
+      className={`py-3 ${
+        cellDate ? "!bg-blue-200 text-blue-600" : ""
+      } relative calendar-day ${
         index === 6 ? "!text-red-600 font-medium" : ""
       }`}
     >
       {day ? <span>{day.getDate()}</span> : <span>&nbsp;</span>}
 
-      {cellDate && <span>co data</span>}
+      {cellDate && <span className="absolute top-0 right-1">v</span>}
     </div>
   );
 };
