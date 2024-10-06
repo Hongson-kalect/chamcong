@@ -86,7 +86,7 @@ export default function TodayStatus(props: ITodayStatusProps) {
 
   return (
     <>
-      <div className="px-2">
+      <div className="px-4">
         <div className="bg-white rounded-t-lg h-40 shadow shadow-gray-700  flex flex-col">
           <div
             className="info flex flex-col flex-1 py-4 items-center justify-center gap-2"

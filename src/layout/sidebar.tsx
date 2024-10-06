@@ -25,6 +25,7 @@ export default function SideBar(props: ISideBarProps) {
         <div className="h-36 bg-gray-400"></div>
 
         <div className="p-2 mt-2">
+          <SideBarItem title="Cham cong" link="/" />
           <SideBarItem title="Xem cau hinh bang cong" link="/bangcong" />
           <SideBarItem title="Cai dat kieu ngay" />
           <SideBarItem title="Cai dat bang luong" />

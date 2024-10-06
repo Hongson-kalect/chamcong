@@ -86,91 +86,121 @@ const Check = ({ date, onClose }: { date: string; onClose: () => void }) => {
   return (
     <div className="px-2">
       <div className="bg-white rounded-lg">
-        <div className="text-center text-xl font-medium">Cham bu</div>
-
-        <div className="flex items-center justify-center gap-2">
-          <p>Ca lam</p>
-          <Select
-            className="w-1/2"
-            defaultValue={kieucas?.[0]?.id}
-            value={workInfo.ca}
-            onChange={(value) => setWorkInfo({ ...workInfo, ca: value })}
-          >
-            {kieucas &&
-              kieucas.map((item, index) => {
-                return (
-                  <Option key={index} value={item.id} title={item.tenca} />
-                );
-              })}
-          </Select>
-        </div>
-        <div className="flex items-center justify-center gap-2 mt-2">
-          <p>Kieu ngay</p>
-          <Select
-            className="w-1/2"
-            defaultValue={kieungays?.[0]?.id}
-            value={workInfo.kieungay}
-            onChange={(value) => setWorkInfo({ ...workInfo, kieungay: value })}
-          >
-            {kieungays &&
-              kieungays.map((item, index) => {
-                return (
-                  <Option
-                    key={index}
-                    value={item.id}
-                    title={item.tenloaingay}
-                  />
-                );
-              })}
-          </Select>
-        </div>
-        <div className="flex flex-1 items-center justify-center gap-2 mt-2">
-          <p>Gio den</p>
-          <input
-            type="datetime-local"
-            className="w-1/2"
-            value={workInfo?.giovao?.slice(0, 16) || getDate() + "T08:00"}
-            onChange={(value) =>
-              setWorkInfo({
-                ...workInfo,
-                giovao: value.target.value,
-              })
-            }
-          />
+        <div
+          className="text-center text-xl py-1 font-medium"
+          style={{ borderBottom: "1px solid #ddd" }}
+        >
+          Cham bu
         </div>
 
-        <div className="flex flex-1 items-center justify-center gap-2 mt-2">
-          <p>Gio ve</p>
-          <input
-            type="datetime-local"
-            className="w-1/2"
-            value={workInfo?.giora?.slice(0, 16) || getDate() + "T17:00"}
-            onChange={(value) =>
-              setWorkInfo({
-                ...workInfo,
-                giora: value.target.value,
-              })
-            }
-          />
+        <div className="flex flex-col items-center gap-2 px-4 py-1">
+          <div className="flex items-center w-full gap-2 py-1">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">Ca lam</p>
+            </div>
+            <Select
+              className="w-1/2 h-10"
+              defaultValue={kieucas?.[0]?.id}
+              value={workInfo.ca}
+              onChange={(value) => setWorkInfo({ ...workInfo, ca: value })}
+            >
+              {kieucas &&
+                kieucas.map((item, index) => {
+                  return (
+                    <Option key={index} value={item.id} title={item.tenca} />
+                  );
+                })}
+            </Select>
+          </div>
+          <div className="flex items-center w-full gap-2 py-1">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">
+                Kieu ngay
+              </p>
+            </div>
+            <Select
+              className="w-1/2 h-10"
+              defaultValue={kieungays?.[0]?.id}
+              value={workInfo.kieungay}
+              onChange={(value) =>
+                setWorkInfo({ ...workInfo, kieungay: value })
+              }
+            >
+              {kieungays &&
+                kieungays.map((item, index) => {
+                  return (
+                    <Option
+                      key={index}
+                      value={item.id}
+                      title={item.tenloaingay}
+                    />
+                  );
+                })}
+            </Select>
+          </div>
+          <div className="flex items-center w-full gap-2 mt-2">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">Gio den</p>
+            </div>
+            <input
+              type="datetime-local"
+              className="flex-1 h-10 px-2 rounded-lg"
+              style={{ border: "1px solid #aaa" }}
+              value={workInfo?.giovao?.slice(0, 16) || getDate() + "T08:00"}
+              onChange={(value) =>
+                setWorkInfo({
+                  ...workInfo,
+                  giovao: value.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="flex items-center w-full gap-2 mt-2">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">Gio ve</p>
+            </div>
+            <input
+              type="datetime-local"
+              className="flex-1 h-10 px-2 rounded-lg"
+              style={{ border: "1px solid #aaa" }}
+              value={workInfo.giora.slice(0, 16) || getDate() + "T08:00"}
+              onChange={(value) =>
+                setWorkInfo({
+                  ...workInfo,
+                  giora: value.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="flex items-center w-full gap-2 mt-2">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">Ghi chu</p>
+            </div>
+            <input
+              type="text"
+              className="flex-1 h-10 px-2 rounded-lg"
+              style={{ border: "1px solid #aaa" }}
+              value={workInfo.ghichu}
+              onChange={(e) =>
+                setWorkInfo({ ...workInfo, ghichu: e.target.value })
+              }
+            />
+          </div>
         </div>
 
-        <textarea
-          value={workInfo.ghichu}
-          onChange={(e) => setWorkInfo({ ...workInfo, ghichu: e.target.value })}
-          placeholder="ghi chu"
-          className=" w-full shadow shadow-red-400"
-        ></textarea>
-
-        <div className="options flex items-center justify-center">
+        <div
+          className="options flex items-center justify-center mt-4"
+          style={{ borderTop: "1px solid #ccc" }}
+        >
           <button
             onClick={handleCheck}
-            className="w-full mt-4 px-2 py-1 bg-blue-600 text-white rounded"
+            className="w-full px-2 py-1 bg-blue-200 text-blue-700 font-medium h-12"
           >
             Cham
           </button>
           <button
             onClick={handleOff}
-            className="w-full mt-4 px-2 py-1 bg-red-600 text-white rounded"
+            className="w-full px-2 py-1 bg-red-200 text-red-700 font-medium h-12"
           >
             Nghi
           </button>
@@ -243,91 +273,121 @@ const Edit = ({ date, onClose }: { date: string; onClose: () => void }) => {
   return (
     <div className="px-2">
       <div className="bg-white rounded-lg">
-        <div className="text-center text-xl font-medium">Cham bu</div>
-
-        <div className="flex items-center justify-center gap-2">
-          <p>Ca lam</p>
-          <Select
-            className="w-1/2"
-            defaultValue={kieucas?.[0]?.id}
-            value={workInfo.ca}
-            onChange={(value) => setWorkInfo({ ...workInfo, ca: value })}
-          >
-            {kieucas &&
-              kieucas.map((item, index) => {
-                return (
-                  <Option key={index} value={item.id} title={item.tenca} />
-                );
-              })}
-          </Select>
-        </div>
-        <div className="flex items-center justify-center gap-2 mt-2">
-          <p>Kieu ngay</p>
-          <Select
-            className="w-1/2"
-            defaultValue={kieungays?.[0]?.id}
-            value={workInfo.kieungay}
-            onChange={(value) => setWorkInfo({ ...workInfo, kieungay: value })}
-          >
-            {kieungays &&
-              kieungays.map((item, index) => {
-                return (
-                  <Option
-                    key={index}
-                    value={item.id}
-                    title={item.tenloaingay}
-                  />
-                );
-              })}
-          </Select>
-        </div>
-        <div className="flex flex-1 items-center justify-center gap-2 mt-2">
-          <p>Gio den</p>
-          <input
-            type="datetime-local"
-            className="w-1/2"
-            value={workInfo?.giovao?.slice(0, 16) || getDate() + "T08:00"}
-            onChange={(value) =>
-              setWorkInfo({
-                ...workInfo,
-                giovao: value.target.value,
-              })
-            }
-          />
+        <div
+          className="text-center text-xl py-1 font-medium"
+          style={{ borderBottom: "1px solid #ddd" }}
+        >
+          Sua cong
         </div>
 
-        <div className="flex flex-1 items-center justify-center gap-2 mt-2">
-          <p>Gio ve</p>
-          <input
-            type="datetime-local"
-            className="w-1/2"
-            value={workInfo?.giora?.slice(0, 16) || getDate() + "T17:00"}
-            onChange={(value) =>
-              setWorkInfo({
-                ...workInfo,
-                giora: value.target.value,
-              })
-            }
-          />
+        <div className="flex flex-col items-center gap-2 px-4 py-1">
+          <div className="flex items-center w-full gap-2 py-1">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">Ca lam</p>
+            </div>
+            <Select
+              className="w-1/2 h-10"
+              defaultValue={kieucas?.[0]?.id}
+              value={workInfo.ca}
+              onChange={(value) => setWorkInfo({ ...workInfo, ca: value })}
+            >
+              {kieucas &&
+                kieucas.map((item, index) => {
+                  return (
+                    <Option key={index} value={item.id} title={item.tenca} />
+                  );
+                })}
+            </Select>
+          </div>
+          <div className="flex items-center w-full gap-2 py-1">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">
+                Kieu ngay
+              </p>
+            </div>
+            <Select
+              className="w-1/2 h-10"
+              defaultValue={kieungays?.[0]?.id}
+              value={workInfo.kieungay}
+              onChange={(value) =>
+                setWorkInfo({ ...workInfo, kieungay: value })
+              }
+            >
+              {kieungays &&
+                kieungays.map((item, index) => {
+                  return (
+                    <Option
+                      key={index}
+                      value={item.id}
+                      title={item.tenloaingay}
+                    />
+                  );
+                })}
+            </Select>
+          </div>
+          <div className="flex items-center w-full gap-2 mt-2">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">Gio den</p>
+            </div>
+            <input
+              type="datetime-local"
+              className="flex-1 h-10 px-2 rounded-lg"
+              style={{ border: "1px solid #aaa" }}
+              value={workInfo?.giovao?.slice(0, 16) || getDate() + "T08:00"}
+              onChange={(value) =>
+                setWorkInfo({
+                  ...workInfo,
+                  giovao: value.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="flex items-center w-full gap-2 mt-2">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">Gio ve</p>
+            </div>
+            <input
+              type="datetime-local"
+              className="flex-1 h-10 px-2 rounded-lg"
+              style={{ border: "1px solid #aaa" }}
+              value={workInfo.giora.slice(0, 16) || getDate() + "T08:00"}
+              onChange={(value) =>
+                setWorkInfo({
+                  ...workInfo,
+                  giora: value.target.value,
+                })
+              }
+            />
+          </div>
+          <div className="flex items-center w-full gap-2 mt-2">
+            <div>
+              <p className="text-sm font-medium text-gray-500 w-20">Ghi chu</p>
+            </div>
+            <input
+              type="text"
+              className="flex-1 h-10 px-2 rounded-lg"
+              style={{ border: "1px solid #aaa" }}
+              value={workInfo.ghichu}
+              onChange={(e) =>
+                setWorkInfo({ ...workInfo, ghichu: e.target.value })
+              }
+            />
+          </div>
         </div>
 
-        <textarea
-          value={workInfo.ghichu}
-          onChange={(e) => setWorkInfo({ ...workInfo, ghichu: e.target.value })}
-          placeholder="ghi chu"
-          className=" w-full shadow shadow-red-400"
-        ></textarea>
-
-        <div className="options flex items-center justify-center">
+        <div
+          className="options flex items-center justify-center mt-4"
+          style={{ borderTop: "1px solid #ccc" }}
+        >
           <button
             onClick={handleEdit}
-            className="w-full mt-4 px-2 py-1 bg-blue-600 text-white rounded"
+            className="w-full px-2 py-1 bg-blue-200 text-blue-700 font-medium h-12"
           >
             Sua cong
           </button>
           <button
             onClick={handleCancel}
-            className="w-full mt-4 px-2 py-1 bg-red-600 text-white rounded"
+            className="w-full px-2 py-1 bg-red-200 text-red-700 font-medium h-12"
           >
             Bo cham
           </button>

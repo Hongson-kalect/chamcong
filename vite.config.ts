@@ -7,6 +7,17 @@ export default () => {
   return defineConfig({
     root: "./src",
     base: "",
-    plugins: [react(), tsconfigPaths()],
+    plugins: [
+      react(),
+      tsconfigPaths(),
+      {
+        name: "override-config",
+        config: () => ({
+          build: {
+            target: "esnext",
+          },
+        }),
+      },
+    ],
   });
 };

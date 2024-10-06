@@ -3,19 +3,47 @@ import SideBar from "@/layout/sidebar";
 import { PlusCircle } from "lucide-react";
 import * as React from "react";
 import { toast } from "react-toastify";
-import { IHeSo, IKieuNgay, WorkPageType } from "../home/_utils/_interface";
+import {
+  IHeSo,
+  IKieuCa,
+  IKieuNgay,
+  WorkPageType,
+} from "../home/_utils/_interface";
 import homeQuery from "../home/_utils/_query";
 import { WorkShiftType } from "../taobangcong/_utils/_interface";
 import { PopupWrapper } from "../taobangcong/popup/workShiftDetail";
+import { RiEdit2Fill } from "react-icons/ri";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { FaCaretDown, FaChevronLeft } from "react-icons/fa6";
+import HesoLuong from "./popup/hesoluong";
+import Kieuca from "./popup/kieuca";
 
 export interface ITrangBangCongProps {}
 
 export default function TrangBangCong(props: ITrangBangCongProps) {
   const [tab, setTab] = React.useState<"ngay" | "luong">("ngay");
   const { workShiftQuery } = homeQuery();
+  const [hesoPopup, setHesoPopup] = React.useState(false);
+  const [kieucaPopup, setKieucaPopup] = React.useState(false);
   const [workShift, setWorkShift] = React.useState<WorkPageType>(
     JSON.parse(JSON.stringify(workShiftQuery?.data || {}))
   );
+
+  const [selectedHeso, setSelectedHeso] = React.useState<IHeSo | null>(null);
+  const [selectedKieuca, setSelectedKieuca] = React.useState<IKieuCa | null>(
+    null
+  );
+
+  const onSelectHeso = (heso: IHeSo | null) => {
+    if (heso) setSelectedHeso({ ...heso });
+    else setSelectedHeso(null);
+    setHesoPopup(true);
+  };
+  const onSelectKieuca = (kieuca: IKieuCa | null) => {
+    if (kieuca) setSelectedKieuca({ ...kieuca });
+    else setSelectedKieuca(null);
+    setKieucaPopup(true);
+  };
 
   React.useEffect(() => {
     if (!workShiftQuery.data) return;
@@ -26,82 +54,147 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
   console.log("workShiftQuery :>> ", workShiftQuery.data);
 
   return (
-    <div className="h-full flex flex-col">
-      <SideBar />
-      <div className="bg-blue-800">
-        <UserHeader />
+    <>
+      <div className="h-full flex flex-col">
+        <div className=" font-medium bg-blue-950 w-screen flex items-center gap-10 text-white p-2 px-4">
+          <FaChevronLeft className="text-2xl" />
+          <p className="text-xl">Kiểu ngày</p>
+        </div>
+        <div className="bg-white flex-1">
+          <div className="flex items-center justify-between px-4 my-4">
+            <div className="text-2xl font-medium text-blue-950 pb-1">
+              Tần suất
+            </div>
+            <button
+              className="flex items-center justify-center gap-2 px-4 rounded-lg py-2 bg-blue-900 text-white"
+              onClick={() => onSelectKieuca(null)}
+            >
+              <PlusIcon /> <p>Ca làm việc</p>
+            </button>
+          </div>
+          <div className="px-6 mb-4">
+            <div className="px-6 mb-4">
+              <div className="rounded-lg bg-blue-900 p-2">
+                <div className="p-2 bg-white h-28 shadow-inner shadow-black">
+                  Biểu đồ cột kiểu ngày đã làm 5 tháng gần nhất
+                </div>
+                <div className="mt-3 mb-1 text-gray-300 font-medium">Tổng</div>
+                <div className="text-white pl-2">
+                  <div className="h-8 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-2 w-2 rounded-full bg-green-400"></div>
+                      <p className="text-lg text-gray-400">Ngày thường</p>
+                    </div>
+                    <p className="text-2xl">240</p>
+                  </div>
+                  <div className="h-8 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-2 w-2 rounded-full bg-orange-400"></div>
+                      <p className="text-lg text-gray-400">Ngày nghỉ</p>
+                    </div>
+                    <p className="text-2xl">12</p>
+                  </div>
+                  <div className="h-8 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="h-2 w-2 rounded-full bg-red-600"></div>
+                      <p className="text-lg text-gray-400">Ngày lễ</p>
+                    </div>
+                    <p className="text-2xl">1</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {workShift.kieungays?.length &&
+            workShift.kieungays?.map((item, index) => {
+              return (
+                <div
+                  key={index}
+                  className="px-4 text-blue-950 mt-8"
+                  style={{ borderBottom: "1px solid #ddd" }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 bg-blue-800 rounded-lg" />
+                    <div className="flex items-center gap-4">
+                      <p className="text-xl font-medium">{item.tenloaingay}</p>
+                      <FaCaretDown size={24} />
+                    </div>
+                  </div>
+                  <div className="pl-10 py-5 flex flex-col gap-3">
+                    {workShift.kieucas?.length &&
+                      workShift.kieucas?.map((ca, caIndex) => {
+                        const heso =
+                          workShift.hesos.find((heso) => {
+                            return (
+                              heso.kieungay === item.id && heso.kieuca === ca.id
+                            );
+                          }) || null;
+
+                        return (
+                          <div
+                            key={caIndex}
+                            className="flex items-center justify-between"
+                            onClick={() => onSelectHeso(heso)}
+                          >
+                            <div className="text-gray-700 px-2 gap-1 flex flex-col">
+                              <p
+                                className="font-medium text-lg"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onSelectKieuca(ca);
+                                }}
+                              >
+                                {ca.tenca}
+                              </p>
+                              <p className="font-light text-[9px] text-gray-500">
+                                Thoi gian{" "}
+                                <span className="text-xs text-blue-600">
+                                  {heso?.batdau || "Kho ro"}
+                                </span>{" "}
+                                -{" "}
+                                <span className="text-xs text-blue-600">
+                                  {heso?.ketthuc || " Khong ro"}
+                                </span>
+                              </p>
+                            </div>
+                            <p className="text-lg font-medium">
+                              <span className="text-gray-500">HS -</span>{" "}
+                              {heso?.heso}
+                            </p>
+                          </div>
+                        );
+                      })}
+                  </div>
+                </div>
+              );
+            })}
+        </div>
       </div>
 
-      <div className="p-2">
-        <input
-          value={workShift?.tencongty}
-          spellCheck={false}
-          className=" bg-transparent  focus:shadow focus:shadow-gray-600 rounded-t-lg outline-none text-xl font-medium px-2 py-0.5"
-          placeholder="Ten cong ty"
-          onChange={(event) =>
-            setWorkShift({ ...workShift, tencongty: event.target.value })
-          }
-        />
-        <div className="flex items-center italic text-[10px] font-light gap-2">
-          <p>Ngay vao</p>
-          <div>{workShift?.ngaybatdau}</div>
-        </div>
-        <div className="flex items-center justify-center gap-2">
-          <div className="flex items-center justify-center gap-2">
-            <p>Bo phan</p>
-            <input
-              type="text"
-              className="flex-1 w-20 px-1 py-0.5"
-              spellCheck={false}
-              value={workShift.bophan}
-              onChange={(event) =>
-                setWorkShift({ ...workShift, bophan: event.target.value })
-              }
-            />
-          </div>
-          <div className="flex items-center justify-center gap-2">
-            <p>Chuc vu</p>
-            <input
-              type="text"
-              className="flex-1 w-20"
-              value={workShift.chucvu}
-              onChange={(event) =>
-                setWorkShift({ ...workShift, chucvu: event.target.value })
-              }
-            />
-            {/* <div>{workShift?.chucvu}</div> */}
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center relative bg-gray-400">
-        <div
-          className={`${
-            tab === "ngay" ? "" : "translate-x-[100%]"
-          } absolute h-full w-1/2 top-0 left-0 bg-black duration-200 ease-linear`}
-        ></div>
-        <div className="w-full flex items-center relative">
-          <div
-            onClick={() => setTab("ngay")}
-            className={`flex flex-1 h-12 items-center justify-center ${
-              tab === "ngay" ? " text-white" : ""
-            }`}
-          >
-            Kieu ngay
-          </div>
-          <div
-            onClick={() => setTab("luong")}
-            className={`flex flex-1 h-12 items-center justify-center ${
-              tab === "luong" ? " text-white" : ""
-            }`}
-          >
-            Luong
-          </div>
-        </div>
+      {/* Popup */}
 
-        {/* </div> */}
-      </div>
-      {tab === "ngay" ? <KieuNgay workShift={workShift} /> : <Luong />}
-    </div>
+      {hesoPopup && (
+        <PopupWrapper
+          onClose={() => {
+            setHesoPopup(false);
+            workShiftQuery.refetch();
+          }}
+        >
+          <HesoLuong heso={selectedHeso} />
+        </PopupWrapper>
+      )}
+      {kieucaPopup && (
+        <PopupWrapper
+          onClose={() => {
+            setKieucaPopup(false);
+            workShiftQuery.refetch();
+          }}
+        >
+          <Kieuca kieuca={selectedKieuca} />
+        </PopupWrapper>
+      )}
+    </>
   );
 }
 

@@ -49,7 +49,7 @@ const StyledBangCong = styled.div`
   }
 
   .calendar-day span {
-    font-size: 15px;
+    font-size: 16px;
   }
 `;
 

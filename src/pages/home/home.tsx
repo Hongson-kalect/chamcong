@@ -4,10 +4,10 @@ import * as React from "react";
 import { Button, useNavigate } from "zmp-ui";
 import { useHomeApi } from "./_utils/_api";
 import { useQuery } from "@tanstack/react-query";
-import { Input } from "antd";
+import { Empty, Input } from "antd";
 import { PopupWrapper } from "../taobangcong/popup/workShiftDetail";
 import CreateWorkPage from "./popup/createWorkpage";
-import { WorkPageType } from "./_utils/_interface";
+import { WorkDateType, WorkPageType } from "./_utils/_interface";
 
 import { BsClipboardCheckFill } from "react-icons/bs";
 import { PiCalendarXFill } from "react-icons/pi";
@@ -37,23 +37,13 @@ export default function HomePage(props: IHomePageProps) {
   const { userInfo, setPopup } = useAppStore();
 
   const [dayCheckPopup, setDayCheckPopup] = React.useState(false);
-  const { workState, setWorkState, workPage, setWorkPage } = useHomeStore();
+  const { workPage, setWorkPage } = useHomeStore();
   const [createWorkPage, setCreateWorkPage] = React.useState(false);
   const [action, setAction] = React.useState<
     "check" | "editCheck" | "editOff" | "off" | "reset" | null
   >(null);
 
-  const [todayInfo, setTodayInfo] = React.useState(() => {
-    return {
-      ngay: "2024/10/3",
-      giovao: undefined,
-      giora: undefined,
-      ca: 0,
-      kieungay: 0,
-      kieunghi: 0,
-      id: 0,
-    };
-  });
+  const [todayInfo, setTodayInfo] = React.useState<WorkDateType | null>(null);
 
   const sendData = (workpage) => {
     setWorkPage(workpage);
@@ -68,53 +58,52 @@ export default function HomePage(props: IHomePageProps) {
         await cancelState({
           machamcong: todayInfo.id,
         });
-      setWorkState(null);
     } catch (error) {
       alert("Ai cho ma huy" + JSON.stringify(error));
     }
   };
 
   React.useEffect(() => {
-    console.log("workPage", workShifts);
-    if (workShifts.status === "pending" || !workShifts.data?.results) return; //dang load hoac load loi
-    if (workShifts.data?.results?.length === 0) {
+    console.log("workShift", workShifts, workShifts.status);
+    if (workShifts.status === "pending") return; //dang load hoac load loi
+    console.log("workShift.data", workShifts.data);
+    if (!workShifts.data) {
       setCreateWorkPage(true);
     } else {
-      setWorkPage(workShifts.data?.results[0]);
+      setWorkPage(workShifts.data);
     }
-  }, [workShifts.data]);
-
-  React.useEffect(() => {
-    console.log("monthWorkInfo :>> ", monthWorkInfo.data, getDate());
-    if (monthWorkInfo.isPending || !monthWorkInfo.data?.length) return;
-    const today = monthWorkInfo.data.find((item) => {
-      return (item.ngay = getDate());
-    });
-    if (today) setTodayInfo(today);
-  }, [monthWorkInfo.data]);
+  }, [workShifts.status]);
 
   React.useEffect(() => {
     if (monthWorkInfo.isPending) return;
-    if (todayInfo.giovao && todayInfo.giora) return setWorkState("checked");
-    if (todayInfo.kieunghi) return setWorkState("dayOff");
-    return setWorkState(null);
-  }, [todayInfo]);
+    const today =
+      monthWorkInfo.data?.find((item) => {
+        return (item.ngay = getDate());
+      }) || null;
+    if (today) setTodayInfo({ ...today });
+    else setTodayInfo(null);
+  }, [monthWorkInfo.data]);
 
-  console.log(
-    "monthWorkInfo.isPending || loading",
-    todayInfo,
-    monthWorkInfo.isPending
-  );
+  console.log("todayInfo", todayInfo);
+  console.log("workMonth", monthWorkInfo);
 
   if (monthWorkInfo.isPending) return <div>Loading</div>;
 
   return (
     <div className="h-full">
       <SideBar />
-      <div className="h-40 bg-blue-800">
+      <div className="h-40 bg-blue-950">
         <UserHeader />
         <TodayStatus />
-        <div className="px-1 mt-4">
+
+        {!!todayInfo ? (
+          <TodayInfo dayInfo={todayInfo} />
+        ) : (
+          <div className="text-center mt-4 bg-whtie">
+            <Empty description={"Hom nay chua cham"}></Empty>
+          </div>
+        )}
+        <div className="px-4 mt-4">
           <div className="text-gray-600 font-medium text-sm">Bảng công</div>
           <BangCong
             dayInfos={monthWorkInfo.data}
@@ -126,13 +115,13 @@ export default function HomePage(props: IHomePageProps) {
 
       {/* Popup */}
 
-      {/* {createWorkPage ? (
+      {createWorkPage ? (
         <PopupWrapper onClose={() => alert("close popup")}>
           <CreateWorkPage sendData={sendData} />
         </PopupWrapper>
       ) : null}
 
-      {action === "check" ? (
+      {/* {action === "check" ? (
         <PopupWrapper onClose={() => setAction(null)}>
           <CheckAction onClose={() => setAction(null)} />
         </PopupWrapper>
@@ -161,3 +150,63 @@ export default function HomePage(props: IHomePageProps) {
     </div>
   );
 }
+
+const TodayInfo = ({ dayInfo }: { dayInfo: WorkDateType }) => {
+  const { workShiftQuery } = homeQuery();
+
+  console.log("workShiftQuery", workShiftQuery);
+  console.log("dayInfo", dayInfo);
+
+  const tenca = React.useMemo(() => {
+    if (!workShiftQuery?.data) return;
+    return (
+      workShiftQuery.data?.kieucas?.find((item) => {
+        return item.id === dayInfo.ca;
+      })?.tenca || ""
+    );
+  }, [workShiftQuery.data, dayInfo]);
+
+  const kieungay = React.useMemo(() => {
+    if (!workShiftQuery?.data) return;
+    return (
+      workShiftQuery.data?.kieungays?.find((item) => {
+        return item.id === dayInfo.kieungay;
+      })?.tenloaingay || ""
+    );
+  }, [workShiftQuery.data, dayInfo]);
+  return (
+    <div className="mt-6 px-4 ">
+      <div className="bg-white rounded-lg px-2 py-1 shadow shadow-gray-400">
+        <div className="flex gap-4 items-center">
+          <div className="text-lg text-gray-700 font-medium">
+            {kieungay || "Chua chon kieu ngay"}
+          </div>
+          <div className="italic bg-yellow-700 text-white text-xs px-2 py-1 rounded-[50%]">
+            {tenca || "null"}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 mt-2">
+          <div className="gap-2 flex items-center justify-center">
+            <p className="font-medium text-sm text-gray-500">Gio vao</p>
+            <div className="font-medium  text-lg px-3 py-1 flex items-center justify-center bg-blue-500 text-white rounded-lg">
+              {dayInfo.giovao.slice(11, 16)}
+            </div>
+          </div>
+          <div className="gap-2 flex items-center justify-center">
+            <p className="font-medium text-sm text-gray-500">Gio ra</p>
+            <div className="font-medium  text-lg px-3 py-1 flex items-center justify-center bg-blue-500 text-white rounded-lg">
+              {dayInfo.giora.slice(11, 16)}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-3">
+          <p className="font-medium text-gray-500">Thu nhap hom nay</p>
+
+          <div className="mt-3 text-center">CHuwa tinh ra</div>
+        </div>
+      </div>
+    </div>
+  );
+};

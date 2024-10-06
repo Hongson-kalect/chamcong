@@ -9,7 +9,7 @@ export const useHomeApi = () => {
   const { httpGet, httpPost, httpDelete, httpPut, httpPatch, api } = useAxios();
 
   const login = useCallback(async () => {
-    const res = await api.post("zlogin", { zalo_id: userInfo.zalo_id });
+    const res = await api.post("zlogin", { zalo_id: userInfo.id });
     return res.data;
   }, [userInfo]);
 
