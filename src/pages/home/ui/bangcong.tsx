@@ -114,7 +114,7 @@ const BangCong = ({ dayInfos, year, month }) => {
 
   return (
     <>
-      <StyledBangCong>
+      <StyledBangCong className="shadow shadow-gray-700">
         <div className="calendar">
           <div className="calendar-header">
             <span>Mon</span>

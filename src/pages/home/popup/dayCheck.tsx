@@ -37,8 +37,8 @@ const Check = ({ date, onClose }: { date: string; onClose: () => void }) => {
 
   const [workInfo, setWorkInfo] = React.useState({
     ngay: date,
-    giora: date + "T08:00",
-    giovao: date + "T17:00",
+    giora: date + "T17:00",
+    giovao: date + "T08:00",
     ca: 0,
     kieungay: 0,
     ghichu: "",
@@ -72,6 +72,8 @@ const Check = ({ date, onClose }: { date: string; onClose: () => void }) => {
       toast.error("Looix oif");
     }
   };
+
+  console.log("workInfo", workInfo);
 
   React.useEffect(() => {
     if (!kieucas?.length || !kieungays?.length) return;

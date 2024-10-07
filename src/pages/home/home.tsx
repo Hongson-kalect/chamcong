@@ -78,7 +78,7 @@ export default function HomePage(props: IHomePageProps) {
     if (monthWorkInfo.isPending) return;
     const today =
       monthWorkInfo.data?.find((item) => {
-        return (item.ngay = getDate());
+        return item.ngay === getDate();
       }) || null;
     if (today) setTodayInfo({ ...today });
     else setTodayInfo(null);
@@ -90,7 +90,7 @@ export default function HomePage(props: IHomePageProps) {
   if (monthWorkInfo.isPending) return <div>Loading</div>;
 
   return (
-    <div className="h-full">
+    <div className="h-full bg-white">
       <SideBar />
       <div className="h-40 bg-blue-950">
         <UserHeader />
@@ -103,8 +103,11 @@ export default function HomePage(props: IHomePageProps) {
             <Empty description={"Hom nay chua cham"}></Empty>
           </div>
         )}
-        <div className="px-4 mt-4">
-          <div className="text-gray-600 font-medium text-sm">Bảng công</div>
+        <div className="px-4 mt-6">
+          <div className="flex items-center justify-between px-2">
+            <div className="text-gray-600 font-medium text-sm">Bảng công</div>
+            <div className="text-gray-600 font-medium text-sm">Chi tiết</div>
+          </div>
           <BangCong
             dayInfos={monthWorkInfo.data}
             year={2024}
@@ -176,7 +179,7 @@ const TodayInfo = ({ dayInfo }: { dayInfo: WorkDateType }) => {
   }, [workShiftQuery.data, dayInfo]);
   return (
     <div className="mt-6 px-4 ">
-      <div className="bg-white rounded-lg px-2 py-1 shadow shadow-gray-400">
+      <div className="bg-white rounded-lg px-2 py-1 shadow shadow-gray-600">
         <div className="flex gap-4 items-center">
           <div className="text-lg text-gray-700 font-medium">
             {kieungay || "Chua chon kieu ngay"}
@@ -186,7 +189,7 @@ const TodayInfo = ({ dayInfo }: { dayInfo: WorkDateType }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 mt-2">
+        <div className="grid grid-cols-2 gap-2 mt-4">
           <div className="gap-2 flex items-center justify-center">
             <p className="font-medium text-sm text-gray-500">Gio vao</p>
             <div className="font-medium  text-lg px-3 py-1 flex items-center justify-center bg-blue-500 text-white rounded-lg">
@@ -201,7 +204,7 @@ const TodayInfo = ({ dayInfo }: { dayInfo: WorkDateType }) => {
           </div>
         </div>
 
-        <div className="mt-3">
+        <div className="mt-4">
           <p className="font-medium text-gray-500">Thu nhap hom nay</p>
 
           <div className="mt-3 text-center">CHuwa tinh ra</div>

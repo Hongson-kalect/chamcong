@@ -26,9 +26,13 @@ export default function SideBar(props: ISideBarProps) {
 
         <div className="p-2 mt-2">
           <SideBarItem title="Cham cong" link="/" />
-          <SideBarItem title="Xem cau hinh bang cong" link="/bangcong" />
-          <SideBarItem title="Cai dat kieu ngay" />
-          <SideBarItem title="Cai dat bang luong" />
+          <SideBarItem title="Bang luong" link="/" />
+          <SideBarItem title="Chi tiet di lam" link="/detail" />
+          <SideBarItem title="Cai dat cong ty" link="/congty" />
+          <SideBarItem title="Cai dat luong" link="/congty" />
+          <SideBarItem title="Cai dat ca lam cong" link="/bangcong" />
+          {/* <SideBarItem title="Cai dat kieu ngay" /> */}
+          {/* <SideBarItem title="Cai dat bang luong" /> */}
         </div>
       </div>
       <div
@@ -59,7 +63,7 @@ export const SideBarItem = (props: SidebarItemProp) => {
   return (
     <div className="flex px-2 py-2.5" onClick={handleClick}>
       <div>{props?.icon}</div>
-      <div className="font-medium text-gray-600">{props.title}</div>
+      <div className="font-medium text-base text-gray-600">{props.title}</div>
     </div>
   );
 };

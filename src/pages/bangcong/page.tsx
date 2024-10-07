@@ -17,22 +17,32 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import { FaCaretDown, FaChevronLeft } from "react-icons/fa6";
 import HesoLuong from "./popup/hesoluong";
 import Kieuca from "./popup/kieuca";
+import Kieungay from "./popup/kieungay";
 
 export interface ITrangBangCongProps {}
 
 export default function TrangBangCong(props: ITrangBangCongProps) {
   const [tab, setTab] = React.useState<"ngay" | "luong">("ngay");
   const { workShiftQuery } = homeQuery();
+  const [kieungayPopup, setKieungayPopup] = React.useState(false);
   const [hesoPopup, setHesoPopup] = React.useState(false);
   const [kieucaPopup, setKieucaPopup] = React.useState(false);
   const [workShift, setWorkShift] = React.useState<WorkPageType>(
     JSON.parse(JSON.stringify(workShiftQuery?.data || {}))
   );
 
+  const [selectedKieungay, setSelectedKieungay] =
+    React.useState<IKieuNgay | null>(null);
   const [selectedHeso, setSelectedHeso] = React.useState<IHeSo | null>(null);
   const [selectedKieuca, setSelectedKieuca] = React.useState<IKieuCa | null>(
     null
   );
+
+  const onSelectKieungay = (kieungay: IKieuNgay | null) => {
+    if (kieungay) setSelectedKieungay({ ...kieungay });
+    else setSelectedKieungay(null);
+    setKieungayPopup(true);
+  };
 
   const onSelectHeso = (heso: IHeSo | null) => {
     if (heso) setSelectedHeso({ ...heso });
@@ -55,7 +65,7 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
 
   return (
     <>
-      <div className="h-full flex flex-col">
+      <div className="h-full flex flex-col bg-white">
         <div className=" font-medium bg-blue-950 w-screen flex items-center gap-10 text-white p-2 px-4">
           <FaChevronLeft className="text-2xl" />
           <p className="text-xl">Kiểu ngày</p>
@@ -63,7 +73,7 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
         <div className="bg-white flex-1">
           <div className="flex items-center justify-between px-4 my-4">
             <div className="text-2xl font-medium text-blue-950 pb-1">
-              Tần suất
+              {/* Tần suất */}
             </div>
             <button
               className="flex items-center justify-center gap-2 px-4 rounded-lg py-2 bg-blue-900 text-white"
@@ -72,7 +82,7 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
               <PlusIcon /> <p>Ca làm việc</p>
             </button>
           </div>
-          <div className="px-6 mb-4">
+          <div className="px-6 pb-4">
             <div className="px-6 mb-4">
               <div className="rounded-lg bg-blue-900 p-2">
                 <div className="p-2 bg-white h-28 shadow-inner shadow-black">
@@ -111,10 +121,13 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
               return (
                 <div
                   key={index}
-                  className="px-4 text-blue-950 mt-8"
+                  className="px-4 text-blue-950 mt-4"
                   style={{ borderBottom: "1px solid #ddd" }}
                 >
-                  <div className="flex items-center gap-3">
+                  <div
+                    className="flex items-center gap-3"
+                    onClick={() => onSelectKieungay(item)}
+                  >
                     <div className="w-9 h-9 bg-blue-800 rounded-lg" />
                     <div className="flex items-center gap-4">
                       <p className="text-xl font-medium">{item.tenloaingay}</p>
@@ -170,6 +183,15 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
               );
             })}
         </div>
+        <div
+          className="mt-4 flex flex-col gap-2 items-center text-gray-400"
+          onClick={() => onSelectKieungay(null)}
+        >
+          <PlusCircle size={20} />
+
+          <div>Theem kieu ngay</div>
+        </div>
+        <div className="h-4"></div>
       </div>
 
       {/* Popup */}
@@ -194,13 +216,23 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
           <Kieuca kieuca={selectedKieuca} />
         </PopupWrapper>
       )}
+      {kieungayPopup && (
+        <PopupWrapper
+          onClose={() => {
+            setKieungayPopup(false);
+            workShiftQuery.refetch();
+          }}
+        >
+          <Kieungay kieungay={selectedKieungay} />
+        </PopupWrapper>
+      )}
     </>
   );
 }
 
 type WorkShiftType = {};
 
-const KieuNgay = (props: { workShift: WorkPageType }) => {
+const ICaigi = (props: { workShift: WorkPageType }) => {
   // const { workShiftQuery } = homeQuery();
   const [workShift, setWorkShit] = React.useState(
     JSON.parse(JSON.stringify(props.workShift))
