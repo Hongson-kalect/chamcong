@@ -13,6 +13,10 @@ import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 import TrangBangCong from "@/pages/bangcong/page";
+import TrangCongTy from "@/pages/congty/congty";
+import CaidatLuong from "@/pages/wageSetting/wageSetting";
+import BangLuong from "@/pages/bangluong/bangluong";
+import ChitietChamcong from "@/pages/workDetail/workDetail";
 
 const Router = () => {
   const queryClient = new QueryClient();
@@ -27,7 +31,11 @@ const Router = () => {
                 <Route path="/" element={<AppLayout />}>
                   <Route path="/" element={<HomePage />}></Route>
                   <Route path="/home" element={<HomePage />}></Route>
+                  <Route path="/detail" element={<ChitietChamcong />}></Route>
+                  <Route path="/bangluong" element={<BangLuong />}></Route>
                   <Route path="/bangcong" element={<TrangBangCong />}></Route>
+                  <Route path="/congty" element={<TrangCongTy />}></Route>
+                  <Route path="/luong" element={<CaidatLuong />}></Route>
                   <Route path="/start" element={<StartPage />}></Route>
                   <Route path="/dieu-khoan" element={<DieuKhoan />}></Route>
                   <Route

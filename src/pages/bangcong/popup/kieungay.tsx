@@ -1,12 +1,18 @@
 import { IKieuNgay } from "@/pages/home/_utils/_interface";
 import * as React from "react";
 import { Input } from "zmp-ui";
+import { useBangCongApi } from "../utils/_api";
+import homeQuery from "@/pages/home/_utils/_query";
 
 export interface IKieungayProps {
   kieungay: IKieuNgay | null;
+  onClose: () => void;
 }
 
 export default function Kieungay(props: IKieungayProps) {
+  const { taoKieungay, suaKieungay } = useBangCongApi();
+  const { workShiftQuery } = homeQuery();
+
   const formAction = React.useMemo(() => {
     return props.kieungay ? "edit" : "create";
   }, []);
@@ -31,12 +37,15 @@ export default function Kieungay(props: IKieungayProps) {
 
   console.log("kieungay", kieungay, props.kieungay);
 
-  const FormAction = (second) => {
+  const FormAction = async () => {
     if (formAction === "edit") {
-      alert("Sửa kiểu ngay");
+      await suaKieungay(kieungay);
     } else {
-      alert("Tạo kiểu ngay");
+      await taoKieungay(kieungay);
     }
+
+    await workShiftQuery.refetch();
+    props.onClose();
   };
 
   const toggleDate = (day: number) => {

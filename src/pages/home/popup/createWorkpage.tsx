@@ -2,6 +2,8 @@ import { Input } from "antd";
 import * as React from "react";
 import { useHomeApi } from "../_utils/_api";
 import { WorkPageType } from "../_utils/_interface";
+import homeQuery from "../_utils/_query";
+import { toast } from "react-toastify";
 
 export interface ICreateWorkPageProps {
   sendData: (workpage: WorkPageType) => void;
@@ -9,11 +11,17 @@ export interface ICreateWorkPageProps {
 
 export default function CreateWorkPage(props: ICreateWorkPageProps) {
   const { createWorkShift } = useHomeApi();
+  const { workShiftQuery } = homeQuery();
   const [name, setName] = React.useState("");
   const [position, setPosition] = React.useState("");
   const createBasicWorkPage = async () => {
-    const data = await createWorkShift({ tencongty: name, chucvu: position });
-    props.sendData(data);
+    try {
+      const data = await createWorkShift({ tencongty: name, chucvu: position });
+      props.sendData(data);
+      workShiftQuery.refetch();
+    } catch (error) {
+      toast.error("Tao bang cong that bai");
+    }
   };
 
   return (

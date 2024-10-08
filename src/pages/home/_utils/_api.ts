@@ -36,7 +36,7 @@ export const useHomeApi = () => {
 
   const createWorkShift = useCallback(
     async (props: { tencongty: string; chucvu: string }) => {
-      const res = await httpPost("tuchamcong/", { props });
+      const res = await httpPost("tuchamcong/", props);
       return res.data;
     },
     [userInfo]

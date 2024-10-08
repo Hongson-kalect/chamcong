@@ -1,12 +1,17 @@
 import { IKieuCa } from "@/pages/home/_utils/_interface";
 import * as React from "react";
 import { Input } from "zmp-ui";
+import { useBangCongApi } from "../utils/_api";
+import homeQuery from "@/pages/home/_utils/_query";
 
 export interface IKieucaProps {
   kieuca: IKieuCa | null;
+  onClose: () => void;
 }
 
 export default function Kieuca(props: IKieucaProps) {
+  const { workShiftQuery } = homeQuery();
+  const { taoKieuca, suaKieuca } = useBangCongApi();
   const formAction = React.useMemo(() => {
     return props.kieuca ? "edit" : "create";
   }, []);
@@ -21,10 +26,13 @@ export default function Kieuca(props: IKieucaProps) {
 
   const FormAction = (second) => {
     if (formAction === "edit") {
-      alert("Sửa kiểu ca");
+      suaKieuca(kieuca);
     } else {
-      alert("Tạo kiểu ca");
+      taoKieuca(kieuca);
     }
+
+    workShiftQuery.refetch();
+    props.onClose();
   };
 
   return (

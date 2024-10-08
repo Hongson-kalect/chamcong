@@ -18,10 +18,13 @@ import { FaCaretDown, FaChevronLeft } from "react-icons/fa6";
 import HesoLuong from "./popup/hesoluong";
 import Kieuca from "./popup/kieuca";
 import Kieungay from "./popup/kieungay";
+import { useNavigate } from "zmp-ui";
 
 export interface ITrangBangCongProps {}
 
 export default function TrangBangCong(props: ITrangBangCongProps) {
+  const navigate = useNavigate();
+
   const [tab, setTab] = React.useState<"ngay" | "luong">("ngay");
   const { workShiftQuery } = homeQuery();
   const [kieungayPopup, setKieungayPopup] = React.useState(false);
@@ -44,9 +47,12 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
     setKieungayPopup(true);
   };
 
-  const onSelectHeso = (heso: IHeSo | null) => {
-    if (heso) setSelectedHeso({ ...heso });
-    else setSelectedHeso(null);
+  const onSelectHeso = (heso: IHeSo | null, ca: IKieuCa, ngay: IKieuNgay) => {
+    setSelectedKieuca({ ...ca });
+    setSelectedKieungay({ ...ngay });
+    if (heso) {
+      setSelectedHeso({ ...heso });
+    } else setSelectedHeso(null);
     setHesoPopup(true);
   };
   const onSelectKieuca = (kieuca: IKieuCa | null) => {
@@ -67,8 +73,10 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
     <>
       <div className="h-full flex flex-col bg-white">
         <div className=" font-medium bg-blue-950 w-screen flex items-center gap-10 text-white p-2 px-4">
-          <FaChevronLeft className="text-2xl" />
-          <p className="text-xl">Kiểu ngày</p>
+          <FaChevronLeft onClick={() => navigate("/")} className="text-2xl" />
+          <p onClick={() => navigate("/")} className="text-xl">
+            Kiểu ngày
+          </p>
         </div>
         <div className="bg-white flex-1">
           <div className="flex items-center justify-between px-4 my-4">
@@ -148,7 +156,7 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
                           <div
                             key={caIndex}
                             className="flex items-center justify-between"
-                            onClick={() => onSelectHeso(heso)}
+                            onClick={() => onSelectHeso(heso, ca, item)}
                           >
                             <div className="text-gray-700 px-2 gap-1 flex flex-col">
                               <p
@@ -200,30 +208,41 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
         <PopupWrapper
           onClose={() => {
             setHesoPopup(false);
-            workShiftQuery.refetch();
+            // workShiftQuery.refetch();
           }}
         >
-          <HesoLuong heso={selectedHeso} />
+          <HesoLuong
+            kieuca={selectedKieuca?.id || 0}
+            kieungay={selectedKieungay?.id || 0}
+            heso={selectedHeso}
+            onClose={() => setHesoPopup(false)}
+          />
         </PopupWrapper>
       )}
       {kieucaPopup && (
         <PopupWrapper
           onClose={() => {
             setKieucaPopup(false);
-            workShiftQuery.refetch();
+            // workShiftQuery.refetch();
           }}
         >
-          <Kieuca kieuca={selectedKieuca} />
+          <Kieuca
+            kieuca={selectedKieuca}
+            onClose={() => setKieucaPopup(false)}
+          />
         </PopupWrapper>
       )}
       {kieungayPopup && (
         <PopupWrapper
           onClose={() => {
             setKieungayPopup(false);
-            workShiftQuery.refetch();
+            // workShiftQuery.refetch();
           }}
         >
-          <Kieungay kieungay={selectedKieungay} />
+          <Kieungay
+            kieungay={selectedKieungay}
+            onClose={() => setKieungayPopup(false)}
+          />
         </PopupWrapper>
       )}
     </>
