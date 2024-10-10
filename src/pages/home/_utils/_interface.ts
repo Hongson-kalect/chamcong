@@ -65,4 +65,9 @@ export type WorkDateType = {
   kieunghi: number;
   ngaycham: string;
   dilam: boolean;
+  tangca?: number;
+  vaomuon?: number;
+  vesom?: number;
+  densom?: number;
+  giolam?: number;
 };

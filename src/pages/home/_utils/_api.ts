@@ -44,6 +44,11 @@ export const useHomeApi = () => {
 
   const checkDate = useCallback(
     async (props: {
+      tangca?: number;
+      vesom?: number;
+      vaomuon?: number;
+      disom?: number;
+      giolam?: number;
       ca?: number;
       kieungay?: number;
       ngay: string;
@@ -58,6 +63,11 @@ export const useHomeApi = () => {
   );
   const editCheckDate = useCallback(
     async (props: {
+      tangca?: number;
+      vesom?: number;
+      vaomuon?: number;
+      disom?: number;
+      giolam?: number;
       ca?: number;
       kieungay?: number;
       giovao: string;

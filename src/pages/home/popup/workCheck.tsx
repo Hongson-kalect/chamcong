@@ -5,7 +5,7 @@ import { useHomeStore } from "../_utils/_store";
 import { DatePicker, Select } from "zmp-ui";
 import { useHomeApi } from "../_utils/_api";
 import { toast } from "react-toastify";
-import { getDate } from "@/lib/utils";
+import { getDate, getTimeDiff } from "@/lib/utils";
 
 export interface IWorkCheckProps {
   todayState?: "checked" | "dayOff" | "";
@@ -43,7 +43,40 @@ export default function WorkCheck(props: IWorkCheckProps) {
     if (!workShiftQuery.data?.id) return toast.error("Chua co bang cong nao");
 
     if (props.todayInfo?.dilam === true) {
-      await editCheckDate({ ...workInfo, tuchamcong: workShiftQuery.data?.id });
+      const heso = workShiftQuery.data?.hesos?.find(
+        (item) =>
+          item.kieuca === workInfo.ca && item.kieungay === workInfo.kieungay
+      );
+      let vesom = 0,
+        tangca = 0,
+        disom = 0,
+        vaomuon = 0,
+        giolam = 0;
+      const di = getTimeDiff(heso?.batdau, workInfo.giovao.slice(11, 19));
+      const ve = getTimeDiff(heso?.ketthuc, workInfo.giora.slice(11, 19));
+      const lam = getTimeDiff(
+        workInfo.giora.slice(11, 19),
+        workInfo.giovao.slice(11, 19)
+      );
+      if (di > 0) disom = di;
+      else vaomuon = -di;
+      if (ve > 0) vesom = ve;
+      else tangca = -ve;
+      if (lam > 0) {
+        giolam = Math.floor((lam * 100) / 60) / 100;
+      } else {
+        giolam = 24 + Math.floor((-lam * 100) / 60) / 100;
+      }
+
+      await editCheckDate({
+        ...workInfo,
+        tangca,
+        vesom,
+        vaomuon,
+        disom,
+        giolam,
+        tuchamcong: workShiftQuery.data?.id,
+      });
     } else if (props.todayInfo?.dilam === false) {
       await editOffDate({
         kieungay: workInfo.kieunghi,

@@ -1,7 +1,7 @@
 import { useAppStore } from "@/store/app.store";
 import * as React from "react";
 import { homeQuery } from "../_utils/_query";
-import { getDate } from "@/lib/utils";
+import { getDate, getTimeDiff } from "@/lib/utils";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaCircleXmark } from "react-icons/fa6";
 import { BsClipboardCheckFill } from "react-icons/bs";
@@ -55,10 +55,22 @@ export default function TodayStatus(props: ITodayStatusProps) {
     try {
       console.log("workShifts", workShifts);
       if (!workShifts?.id) return toast.error("Chua chon bang cong");
+      let giolam = 0;
+      const lam = getTimeDiff("17:00:00", "08:00:00");
+      if (lam > 0) {
+        giolam = Math.floor((lam * 100) / 60) / 100;
+      } else {
+        giolam = 24 + Math.floor((-lam * 100) / 60) / 100;
+      }
+
+      //Co chon ca mac dinh thi lay ca mac dinh
       await checkDate({
+        ca: workShifts?.kieucas?.[0].id,
+        kieungay: workShifts?.kieungays?.[0].id,
         ngay: getDate(),
         giovao: getDate() + "T08:00",
         giora: getDate() + "T17:00",
+        giolam,
         tuchamcong: workShifts?.id,
       });
       monthWorkQuery.refetch();

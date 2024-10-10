@@ -5,6 +5,7 @@ import { getUserPermisson } from "./_utils/_api";
 import { useAppStore } from "@/store/app.store";
 import { checkUserInfo } from "@/lib/utils";
 import { setCache } from "@/store/native.store";
+import zaloAccessImg from "@/asset/images/zaloAccess.png";
 
 export interface IGetPerMissonPageProps {}
 
@@ -27,7 +28,12 @@ export default function GetPerMissonPage(props: IGetPerMissonPageProps) {
     <div className="bg-white flex flex-col items-center gap-12  px-6 py-8 h-full">
       <div className="image mt-8 w-full flex-1">
         <div className="w-full h-full bg-blue-300">
-          <div className="image">getpersioon page</div>
+          <img
+            className="image w-full h-full"
+            style={{
+              background: `url(${zaloAccessImg}) center center / cover no-repeat `,
+            }}
+          ></img>
         </div>
       </div>
       <p className="title font-semibold text-[26px] text-center text-gray-950">

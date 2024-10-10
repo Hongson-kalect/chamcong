@@ -1,5 +1,8 @@
 import * as React from "react";
 import ImageGallery from "react-image-gallery";
+import chamcong from "@/asset/images/chamcong.png";
+import tinhluong from "@/asset/images/tinhluong.png";
+import lienket from "@/asset/images/lienketdoanhnhgoep.png";
 
 export interface IStartTabImageProps {
   tab: number;
@@ -8,15 +11,36 @@ export interface IStartTabImageProps {
 
 const images = [
   {
-    original: <div className="w-full h-full bg-blue-400"></div>,
+    original: (
+      <div
+        className="w-full h-full bg-blue-400"
+        style={{
+          background: `url(${chamcong}) center center / cover no-repeat `,
+        }}
+      ></div>
+    ),
     // thumbnail: "https://picsum.photos/id/1018/250/150/",
   },
   {
-    original: <div className="w-full h-full bg-red-400"></div>,
+    original: (
+      <img
+        className="w-full h-full bg-red-400"
+        style={{
+          background: `url(${tinhluong}) center center / cover no-repeat `,
+        }}
+      ></img>
+    ),
     thumbnail: "https://picsum.photos/id/1015/250/150/",
   },
   {
-    original: <div className="w-full h-full bg-green-400"></div>,
+    original: (
+      <div
+        className="w-full h-full bg-green-400"
+        style={{
+          background: `url(${lienket}) center center / cover no-repeat `,
+        }}
+      ></div>
+    ),
     thumbnail: "https://picsum.photos/id/1019/250/150/",
   },
 ];

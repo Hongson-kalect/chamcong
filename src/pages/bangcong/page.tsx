@@ -84,40 +84,40 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
               {/* Tần suất */}
             </div>
             <button
-              className="flex items-center justify-center gap-2 px-4 rounded-lg py-2 bg-blue-900 text-white"
+              className="flex items-center justify-center gap-2 px-4 rounded-lg py-1 bg-blue-900 text-white"
               onClick={() => onSelectKieuca(null)}
             >
               <PlusIcon /> <p>Ca làm việc</p>
             </button>
           </div>
-          <div className="px-6 pb-4">
-            <div className="px-6 mb-4">
+          <div className="px-6 pb-2">
+            <div className=" mb-4">
               <div className="rounded-lg bg-blue-900 p-2">
-                <div className="p-2 bg-white h-28 shadow-inner shadow-black">
+                <div className="p-2 bg-white h-20 shadow-inner shadow-black">
                   Biểu đồ cột kiểu ngày đã làm 5 tháng gần nhất
                 </div>
                 <div className="mt-3 mb-1 text-gray-300 font-medium">Tổng</div>
                 <div className="text-white pl-2">
-                  <div className="h-8 flex items-center justify-between">
+                  <div className="h-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-2 rounded-full bg-green-400"></div>
-                      <p className="text-lg text-gray-400">Ngày thường</p>
+                      <p className=" text-gray-400">Ngày thường</p>
                     </div>
-                    <p className="text-2xl">240</p>
+                    <p className="text-xl">240</p>
                   </div>
-                  <div className="h-8 flex items-center justify-between">
+                  <div className="h-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-2 rounded-full bg-orange-400"></div>
-                      <p className="text-lg text-gray-400">Ngày nghỉ</p>
+                      <p className=" text-gray-400">Ngày nghỉ</p>
                     </div>
-                    <p className="text-2xl">12</p>
+                    <p className="text-xl">12</p>
                   </div>
-                  <div className="h-8 flex items-center justify-between">
+                  <div className="h-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <div className="h-2 w-2 rounded-full bg-red-600"></div>
-                      <p className="text-lg text-gray-400">Ngày lễ</p>
+                      <p className=" text-gray-400">Ngày lễ</p>
                     </div>
-                    <p className="text-2xl">1</p>
+                    <p className="text-xl">1</p>
                   </div>
                 </div>
               </div>
@@ -129,7 +129,7 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
               return (
                 <div
                   key={index}
-                  className="px-4 text-blue-950 mt-4"
+                  className="px-4 text-blue-950 mt-3"
                   style={{ borderBottom: "1px solid #ddd" }}
                 >
                   <div
@@ -138,11 +138,11 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
                   >
                     <div className="w-9 h-9 bg-blue-800 rounded-lg" />
                     <div className="flex items-center gap-4">
-                      <p className="text-xl font-medium">{item.tenloaingay}</p>
+                      <p className="text-xl">{item.tenloaingay}</p>
                       <FaCaretDown size={24} />
                     </div>
                   </div>
-                  <div className="pl-10 py-5 flex flex-col gap-3">
+                  <div className="pl-10 py-3 flex flex-col gap-2">
                     {workShift.kieucas?.length &&
                       workShift.kieucas?.map((ca, caIndex) => {
                         const heso =
@@ -158,9 +158,9 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
                             className="flex items-center justify-between"
                             onClick={() => onSelectHeso(heso, ca, item)}
                           >
-                            <div className="text-gray-700 px-2 gap-1 flex flex-col">
+                            <div className="text-gray-700 pt-1 gap-1 flex flex-col">
                               <p
-                                className="font-medium text-lg"
+                                className="text-lg"
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   onSelectKieuca(ca);
@@ -169,7 +169,6 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
                                 {ca.tenca}
                               </p>
                               <p className="font-light text-[9px] text-gray-500">
-                                Thoi gian{" "}
                                 <span className="text-xs text-blue-600">
                                   {heso?.batdau || "Kho ro"}
                                 </span>{" "}
@@ -179,7 +178,7 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
                                 </span>
                               </p>
                             </div>
-                            <p className="text-lg font-medium">
+                            <p className="">
                               <span className="text-gray-500">HS -</span>{" "}
                               {heso?.heso}
                             </p>

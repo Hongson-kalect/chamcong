@@ -65,7 +65,7 @@ export default function WageInfo(props: IWageInfoProps) {
         props.active ? "translate-x-0" : "translate-x-[-100%]"
       } duration-200 bg-white`}
     >
-      <div className="status-bar h-10 bg-gradient-to-r from-blue-600 to-blue-800 w-screen"></div>
+      {/* <div className="status-bar h-10 bg-gradient-to-r from-blue-600 to-blue-800 w-screen"></div> */}
       <div
         className="w-full header relative h-12 text-center text-gray-600 text-xl font-medium flex items-center justify-center"
         style={{ borderBottom: "1px solid #E3E3E3" }}

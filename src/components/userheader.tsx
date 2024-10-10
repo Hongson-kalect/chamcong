@@ -11,16 +11,18 @@ export default function UserHeader(props: IUserHeaderProps) {
         className="user flex gap-4 items-center"
         onClick={() => setPopup(true)}
       >
-        <img className="h-10 w-10 rounded-full" src={userInfo.avatar} />
+        <img className="h-12 w-12 rounded bg-black" src={userInfo.avatar} />
         <div>
-          <p className="text-sm text-gray-400">Cong nhan</p>
-          <p className="text-lg text-white font-semibold">Cong ty A</p>
+          <p className="text-sm text-slate-300 opacity-80">Cong nhan</p>
+          <p className="text-lg text-white font-semibold opacity-90">
+            Cong ty A
+          </p>
         </div>
       </div>
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         <img className="h-10 w-10 rounded-full" src={userInfo.avatar} />
         <div className="h-10 w-4 rounded-lg bg-red-400" />
-      </div>
+      </div> */}
     </div>
   );
 }

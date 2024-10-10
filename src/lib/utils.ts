@@ -95,3 +95,10 @@ export function getFirstAndLastDayOfMonth(year, month) {
     lastDay: lastDayFormatted,
   };
 }
+
+export function getTimeDiff(date1, date2) {
+  //08:00:00
+  const date1Minus = date1.split(":");
+  const date2Minus = date2.split(":");
+  return (date1Minus[0] - date2Minus[0]) * 60 + (date1Minus[1] - date2Minus[1]);
+}

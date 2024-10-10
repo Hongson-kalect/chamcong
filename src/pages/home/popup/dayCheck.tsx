@@ -1,6 +1,6 @@
 import * as React from "react";
 import homeQuery from "../_utils/_query";
-import { getDate } from "@/lib/utils";
+import { getDate, getTimeDiff } from "@/lib/utils";
 import { Select } from "zmp-ui";
 import { useAppStore } from "@/store/app.store";
 import { useHomeStore } from "../_utils/_store";
@@ -47,7 +47,40 @@ const Check = ({ date, onClose }: { date: string; onClose: () => void }) => {
   const handleCheck = async () => {
     try {
       if (!workShiftQuery.data?.id) return toast.error("Chua co bang cong nao");
-      await checkDate({ ...workInfo, tuchamcong: workShiftQuery.data?.id });
+      const heso = workShiftQuery.data?.hesos?.find(
+        (item) =>
+          item.kieuca === workInfo.ca && item.kieungay === workInfo.kieungay
+      );
+      let vesom = 0,
+        tangca = 0,
+        disom = 0,
+        vaomuon = 0,
+        giolam = 0;
+      const di = getTimeDiff(heso?.batdau, workInfo.giovao.slice(11, 19));
+      const ve = getTimeDiff(heso?.ketthuc, workInfo.giora.slice(11, 19));
+      const lam = getTimeDiff(
+        workInfo.giora.slice(11, 19),
+        workInfo.giovao.slice(11, 19)
+      );
+      if (di > 0) disom = di;
+      else vaomuon = -di;
+      if (ve > 0) vesom = ve;
+      else tangca = -ve;
+      if (lam > 0) {
+        giolam = Math.floor((lam * 100) / 60) / 100;
+      } else {
+        giolam = 24 + Math.floor((-lam * 100) / 60) / 100;
+      }
+
+      await checkDate({
+        ...workInfo,
+        tangca,
+        vesom,
+        vaomuon,
+        disom,
+        giolam,
+        tuchamcong: workShiftQuery.data?.id,
+      });
 
       onClose();
       toast.success("Cham bu thanh cong");
@@ -66,7 +99,7 @@ const Check = ({ date, onClose }: { date: string; onClose: () => void }) => {
       });
 
       onClose();
-      toast.success("Cham bu thanh cong");
+      toast.success("Ghi nghi thanh cong");
       monthWorkQuery.refetch();
     } catch (error) {
       toast.error("Looix oif");
@@ -76,7 +109,15 @@ const Check = ({ date, onClose }: { date: string; onClose: () => void }) => {
   console.log("workInfo", workInfo);
 
   React.useEffect(() => {
+    console.log("kieucas, kieungays", kieucas, kieungays);
     if (!kieucas?.length || !kieungays?.length) return;
+
+    // if (!workInfo.ca) {
+    //   setWorkInfo((prev) => ({ ...prev, ca: kieucas[0]?.id }));
+    // }
+    // if (!workInfo.kieungay) {
+    //   setWorkInfo((prev) => ({ ...prev, kieungay: kieungays[0]?.id }));
+    // }
 
     setWorkInfo((prev) => ({
       ...prev,
@@ -227,6 +268,64 @@ const Edit = ({ date, onClose }: { date: string; onClose: () => void }) => {
     id: 0,
   });
 
+  const handleEdit = async () => {
+    try {
+      if (!workShiftQuery.data?.id) return toast.error("Chua co bang cong nao");
+
+      const heso = workShiftQuery.data?.hesos?.find(
+        (item) =>
+          item.kieuca === workInfo.ca && item.kieungay === workInfo.kieungay
+      );
+      let vesom = 0,
+        tangca = 0,
+        disom = 0,
+        vaomuon = 0,
+        giolam = 0;
+      const di = getTimeDiff(heso?.batdau, workInfo.giovao.slice(11, 19));
+      const ve = getTimeDiff(heso?.ketthuc, workInfo.giora.slice(11, 19));
+      const lam = getTimeDiff(
+        workInfo.giora.slice(11, 19),
+        workInfo.giovao.slice(11, 19)
+      );
+      if (di > 0) disom = di;
+      else vaomuon = -di;
+      if (ve > 0) vesom = ve;
+      else tangca = -ve;
+      if (lam > 0) {
+        giolam = Math.floor((lam * 100) / 60) / 100;
+      } else {
+        giolam = 24 + Math.floor((lam * 100) / 60) / 100;
+      }
+
+      await editCheckDate({
+        ...workInfo,
+        tangca,
+        vesom,
+        vaomuon,
+        disom,
+        giolam,
+        tuchamcong: workShiftQuery.data?.id,
+      });
+
+      onClose();
+      toast.success("Sua okela");
+      monthWorkQuery.refetch();
+    } catch (error) {
+      toast.error("Looix oif");
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      await cancelState({ machamcong: workInfo.id });
+      monthWorkQuery.refetch();
+      toast.success("Huy okela");
+      onClose();
+    } catch (error) {
+      toast("ua ko xoa dc");
+    }
+  };
+
   React.useEffect(() => {
     if (!kieucas?.length || !kieungays?.length) return;
 
@@ -247,30 +346,6 @@ const Edit = ({ date, onClose }: { date: string; onClose: () => void }) => {
     }
     setWorkInfo((prev) => ({ ...prev, ...selectedDate }));
   }, [monthWorkQuery.data]);
-
-  const handleEdit = async () => {
-    try {
-      if (!workShiftQuery.data?.id) return toast.error("Chua co bang cong nao");
-      await editCheckDate({ ...workInfo, tuchamcong: workShiftQuery.data?.id });
-
-      onClose();
-      toast.success("Sua okela");
-      monthWorkQuery.refetch();
-    } catch (error) {
-      toast.error("Looix oif");
-    }
-  };
-
-  const handleCancel = async () => {
-    try {
-      await cancelState({ machamcong: workInfo.id });
-      monthWorkQuery.refetch();
-      toast.success("Huy okela");
-      onClose();
-    } catch (error) {
-      toast("ua ko xoa dc");
-    }
-  };
 
   return (
     <div className="px-2">

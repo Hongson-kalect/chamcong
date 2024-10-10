@@ -88,9 +88,9 @@ export default function AppLayout(props: IAppLayoutProps) {
 
   return (
     <div className="w-screen h-screen flex flex-col">
-      <div>
+      {/* <div>
         <div className="status-bar h-10 bg-blue-950 w-screen"></div>
-      </div>
+      </div> */}
       <div className="flex-1 bg-[#f5f5f5]">
         {permisson.isPending || userZaloInfo.isPending ? (
           <div>Loading</div>
