@@ -86,7 +86,7 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
               <p>Ghi cái gì đấy</p>
             </div>
             <button
-              className="flex items-center justify-center gap-2 px-4 rounded-xl shadow shadow-blue-700   py-1 bg-blue-900 text-white h-10"
+              className="flex items-center justify-center gap-2 px-4 rounded-xl shadow shadow-blue-700   py-1 bg-black text-white h-10"
               onClick={() => onSelectKieuca(null)}
             >
               <BsPlus size={24} />
@@ -95,7 +95,7 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
           </div>
           <div className="px-3 pt-1 pb-1">
             <div className=" mb-4">
-              <div className="rounded-xl  bg-blue-900 p-3">
+              <div className="rounded-xl  bg-black p-3">
                 <div className="p-2 bg-white h-20 shadow-inner shadow-black">
                   Biểu đồ cột kiểu ngày đã làm 5 tháng gần nhất
                 </div>
