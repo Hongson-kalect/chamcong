@@ -13,12 +13,13 @@ import homeQuery from "../home/_utils/_query";
 import { WorkShiftType } from "../taobangcong/_utils/_interface";
 import { PopupWrapper } from "../taobangcong/popup/workShiftDetail";
 import { RiEdit2Fill } from "react-icons/ri";
-import { PlusIcon } from "@radix-ui/react-icons";
 import { FaCaretDown, FaChevronLeft } from "react-icons/fa6";
 import HesoLuong from "./popup/hesoluong";
 import Kieuca from "./popup/kieuca";
 import Kieungay from "./popup/kieungay";
 import { useNavigate } from "zmp-ui";
+import { BsPlus } from "react-icons/bs";
+import { GoSun } from "react-icons/go";
 
 export interface ITrangBangCongProps {}
 
@@ -72,27 +73,29 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
   return (
     <>
       <div className="h-full flex flex-col bg-white">
-        <div className=" font-medium bg-blue-950 w-screen flex items-center gap-10 text-white p-2 px-4">
-          <FaChevronLeft onClick={() => navigate("/")} className="text-2xl" />
+        <div className=" font-medium bg-blue-950 w-screen flex items-center gap-10 text-white p-2 px-4 pt-10">
+          <FaChevronLeft onClick={() => navigate("/")} className="" />
           <p onClick={() => navigate("/")} className="text-xl">
             Kiểu ngày
           </p>
         </div>
         <div className="bg-white flex-1">
           <div className="flex items-center justify-between px-4 my-4">
-            <div className="text-2xl font-medium text-blue-950 pb-1">
+            <div className="text-lg opacity-50 font-medium text-blue-800 pb-1">
               {/* Tần suất */}
+              <p>Ghi cái gì đấy</p>
             </div>
             <button
-              className="flex items-center justify-center gap-2 px-4 rounded-lg py-1 bg-blue-900 text-white"
+              className="flex items-center justify-center gap-2 px-4 rounded-xl shadow shadow-blue-700   py-1 bg-blue-900 text-white h-10"
               onClick={() => onSelectKieuca(null)}
             >
-              <PlusIcon /> <p>Ca làm việc</p>
+              <BsPlus size={24} />
+              <p className="font-medium">Ca làm việc</p>
             </button>
           </div>
-          <div className="px-6 pb-2">
+          <div className="px-3 pt-1 pb-1">
             <div className=" mb-4">
-              <div className="rounded-lg bg-blue-900 p-2">
+              <div className="rounded-xl  bg-blue-900 p-3">
                 <div className="p-2 bg-white h-20 shadow-inner shadow-black">
                   Biểu đồ cột kiểu ngày đã làm 5 tháng gần nhất
                 </div>
@@ -136,13 +139,13 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
                     className="flex items-center gap-3"
                     onClick={() => onSelectKieungay(item)}
                   >
-                    <div className="w-9 h-9 bg-blue-800 rounded-lg" />
-                    <div className="flex items-center gap-4">
+                    <GoSun size={24} className="text-blue-800" />
+                    <div className="flex items-center gap-4 font-medium ">
                       <p className="text-xl">{item.tenloaingay}</p>
                       <FaCaretDown size={24} />
                     </div>
                   </div>
-                  <div className="pl-10 py-3 flex flex-col gap-2">
+                  <div className="pl-10 py-2 flex flex-col gap-2">
                     {workShift.kieucas?.length &&
                       workShift.kieucas?.map((ca, caIndex) => {
                         const heso =
@@ -156,9 +159,10 @@ export default function TrangBangCong(props: ITrangBangCongProps) {
                           <div
                             key={caIndex}
                             className="flex items-center justify-between"
+                            style={{ borderBottom: "1px solid #eee" }}
                             onClick={() => onSelectHeso(heso, ca, item)}
                           >
-                            <div className="text-gray-700 pt-1 gap-1 flex flex-col">
+                            <div className="text-gray-700 gap-1 flex flex-col">
                               <p
                                 className="text-lg"
                                 onClick={(e) => {

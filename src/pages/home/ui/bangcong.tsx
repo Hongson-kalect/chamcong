@@ -5,10 +5,11 @@ import { getDate } from "@/lib/utils";
 import { PopupWrapper } from "@/pages/taobangcong/popup/workShiftDetail";
 import DayCheck from "../popup/dayCheck";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import homeQuery from "../_utils/_query";
 
 const StyledBangCong = styled.div`
   .calendar {
-    width: 100%;
+    /* width: 100%; */
     /* height: 300px; */
   }
 
@@ -29,14 +30,13 @@ const StyledBangCong = styled.div`
     align-items: center;
     display: flex;
     justify-content: space-evenly;
-    padding: 2px 0;
     /* grid-gap: ; */
     span {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 36px;
-      height: 36px;
+      width: 28px;
+      height: 28px;
     }
   }
   .calendar-day {
@@ -48,7 +48,8 @@ const StyledBangCong = styled.div`
   } */
 `;
 
-const BangCong = ({ dayInfos, year, month }) => {
+const BangCong = ({ dayInfos, year, month, onSelect }) => {
+  const { monthWorkQuery } = homeQuery();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -104,29 +105,34 @@ const BangCong = ({ dayInfos, year, month }) => {
 
   const handleCellSelect = (date: Date) => {
     setSelectedDate(getDate(date));
-    setDayCheckPopup(true);
+    // setDayCheckPopup(true);
+    const selectedData = monthWorkQuery?.data?.find(
+      (dayInfo) => dayInfo.ngay === getDate(date)
+    );
+
+    onSelect(date, selectedData);
   };
 
   return (
     <>
       <StyledBangCong className="px-0">
-        <div className="calendar rounded-lg bg-amber-50 shadow shadow-gray-300">
+        <div className="calendar rounded-lg shadow shadow-gray-300">
           <div
-            className="flex items-center justify-between px-2 h-16"
+            className="flex items-center justify-between px-2 h-12"
             style={{ borderBottom: "1px solid #ddd" }}
           >
-            <FaChevronLeft size={18} color="#666" />
-            <p className="text-lg font-bold text-gray-600 uppercase">{`Tháng ${month}, ${year}`}</p>
-            <FaChevronRight size={18} color="#666" />
+            <FaChevronLeft size={16} color="#666" />
+            <p className=" font-bold text-gray-600 uppercase">{`Tháng ${month}, ${year}`}</p>
+            <FaChevronRight size={16} color="#666" />
           </div>
-          <div className="calendar-header py-2 mt-2 w-full">
-            <span className="text-lg font-medium text-gray-700">T2</span>
-            <span className="text-lg font-medium text-gray-700">T3</span>
-            <span className="text-lg font-medium text-gray-700">T4</span>
-            <span className="text-lg font-medium text-gray-700">T5</span>
-            <span className="text-lg font-medium text-gray-700">T6</span>
-            <span className="text-lg font-medium text-gray-700">T7</span>
-            <span className="text-lg font-medium text-red-500">CN</span>
+          <div className="calendar-header py-2 px-1 mt-2 w-full">
+            <span className="font-medium text-gray-700">T2</span>
+            <span className="font-medium text-gray-700">T3</span>
+            <span className="font-medium text-gray-700">T4</span>
+            <span className="font-medium text-gray-700">T5</span>
+            <span className="font-medium text-gray-700">T6</span>
+            <span className="font-medium text-gray-700">T7</span>
+            <span className="font-medium text-red-500">CN</span>
           </div>
           <div className="calendar-grid pb-4">
             {weeks.map((week, cellIndex) => {
@@ -137,12 +143,13 @@ const BangCong = ({ dayInfos, year, month }) => {
               );
               if (cellIndex > 1 && !week[0]) return;
               return (
-                <div key={cellIndex} className="flex justify-evenly py-1">
+                <div key={cellIndex} className="flex justify-evenly p-1">
                   {week.map((day, index) => {
                     // if (cellIndex > 2 && !day) return;
                     return (
                       <Cell
-                        onClick={() => handleCellSelect(day)}
+                        onClick={day ? () => handleCellSelect(day) : undefined}
+                        selected={day ? getDate(day) === selectedDate : false}
                         index={index}
                         day={day}
                         key={index}
@@ -175,10 +182,39 @@ type CellProps = {
   day: Date;
   index: number;
   dayInfos: WorkDateType[];
-  onClick: () => void;
+  selected: boolean;
+  onClick?: () => void;
 };
 
-const Cell = ({ day, index, dayInfos, onClick }: CellProps) => {
+const StyledCell = styled.div`
+  &.selected {
+    position: relative;
+    &::before {
+      position: absolute;
+      content: "";
+      height: 100%;
+      width: 100%;
+      border-radius: 50%;
+      left: 0px;
+      background-color: royalblue;
+      z-index: 1;
+    }
+
+    &::before {
+      width: 100%;
+      height: 100%;
+      background-color: royalblue;
+      animation: pulse 2s linear infinite;
+    }
+  }
+
+  /* &.selected::after {
+    width: 100%;
+    height: 100%;
+  } */
+`;
+
+const Cell = ({ day, index, dayInfos, selected, onClick }: CellProps) => {
   const cellDate = useMemo(() => {
     if (!day) return;
     const thisDate = dayInfos.find((item) => item.ngay === getDate(day));
@@ -186,16 +222,24 @@ const Cell = ({ day, index, dayInfos, onClick }: CellProps) => {
   }, [dayInfos]);
 
   return (
-    <div
-      onClick={() => day && onClick()}
+    <StyledCell
+      onClick={() => onClick && onClick()}
       key={index}
-      className={`h-9 w-9 flex items-center justify-center rounded-full opacity-90 text-xl  ${
-        cellDate ? " bg-blue-600 text-white" : ""
-      } relative calendar-day ${index === 6 ? "text-red-600 font-medium" : ""}`}
+      className={`h-7 w-7 flex items-center justify-center ${
+        selected ? "selected" : ""
+      }`}
     >
-      {day ? <span>{day.getDate()}</span> : <span>&nbsp;</span>}
+      <div
+        className={`transition-[background-color] duration-500 h-full w-full flex items-center justify-center absolute z-10 rounded-full  ${
+          cellDate ? " bg-blue-400 text-white" : ""
+        } relative calendar-day ${
+          index === 6 ? "text-red-600 font-medium" : ""
+        } ${selected ? "bg-blue-700 text-white" : ""}`}
+      >
+        {day ? <span>{day.getDate()}</span> : <span>&nbsp;</span>}
+      </div>
 
       {/* {cellDate && <span className="absolute top-0 right-1">v</span>} */}
-    </div>
+    </StyledCell>
   );
 };

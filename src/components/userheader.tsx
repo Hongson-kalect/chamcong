@@ -4,12 +4,12 @@ import * as React from "react";
 export interface IUserHeaderProps {}
 
 export default function UserHeader(props: IUserHeaderProps) {
-  const { setPopup, userInfo } = useAppStore();
+  const { setShowNavbar, userInfo } = useAppStore();
   return (
     <div className="flex items-center justify-between px-2 py-1 mb-2">
       <div
         className="user flex gap-4 items-center"
-        onClick={() => setPopup(true)}
+        onClick={() => setShowNavbar(true)}
       >
         <img className="h-12 w-12 rounded bg-black" src={userInfo.avatar} />
         <div>

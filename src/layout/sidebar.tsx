@@ -16,7 +16,7 @@ const SideBarWrapper = styled.div`
 `;
 
 export default function SideBar(props: ISideBarProps) {
-  const { popup, setPopup } = useAppStore();
+  const { popup, setShowNavbar } = useAppStore();
   return (
     <SideBarWrapper
       className={`${popup ? "" : "-translate-x-[100%]"} duration-200`}
@@ -37,7 +37,7 @@ export default function SideBar(props: ISideBarProps) {
       </div>
       <div
         className="overlay flex-1 bg-[#00000088]"
-        onClick={() => setPopup(false)}
+        onClick={() => setShowNavbar(false)}
       ></div>
     </SideBarWrapper>
   );
@@ -51,12 +51,12 @@ type SidebarItemProp = {
 
 export const SideBarItem = (props: SidebarItemProp) => {
   const navigate = useNavigate();
-  const { setPopup } = useAppStore();
+  const { setShowNavbar } = useAppStore();
 
   const handleClick = () => {
     if (props.link) {
       navigate(props.link);
-      setPopup(false);
+      setShowNavbar(false);
     }
   };
 

@@ -51,7 +51,7 @@ export default function TodayStatus(props: ITodayStatusProps) {
     } catch (error) {}
   };
 
-  const fastCheck = async () => {
+  const fastCheck = async (date?: string) => {
     try {
       console.log("workShifts", workShifts);
       if (!workShifts?.id) return toast.error("Chua chon bang cong");
@@ -95,6 +95,98 @@ export default function TodayStatus(props: ITodayStatusProps) {
   // const handleChamCong = async() => { await checkDate({
 
   // }) }
+
+  return (
+    <div className="h-44 rounded-xl flex flex-col justify-between shadow-md shadow-gray-400 bg-white p-4">
+      <div className="flex gap-3">
+        <div
+          className="calendar text-center px-1 py-0.5 rounded shadow-md shadow-gray-800"
+          style={{ border: "1px solid #E5E7EB" }}
+        >
+          <p className=" text-gray-500">
+            {new Date().getDay() ? "Thu " + new Date().getDay() : "Chu nhat"}
+          </p>
+          <p className="text-2xl font-medium text-blue-900">
+            {new Date().getDate()}
+          </p>
+          <p className="text-blue-200 text-xs">
+            Thang {new Date().getMonth() + 1}
+          </p>
+        </div>
+        <div
+          className="flex-1 flex items-center p-2 gap-4 shadow-md shadow-gray-800 rounded"
+          style={{ border: "1px solid #E5E7EB" }}
+        >
+          <div className="h-10 w-10 bg-red-200 rounded"></div>
+          <p className="flex-1">Nay di lam chu? Cham cong nao ban oi :V</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-8">
+        {todayInfo?.dilam ? (
+          <>
+            <div
+              className="rounded-xl flex items-center justify-center gap-2 bg-blue-400 shadow shadow-blue-400 text-white h-10 flex-1"
+              onClick={() => setPopup(true)}
+            >
+              <IoSettingsOutline />
+              Sửa thời gian
+            </div>
+            <div
+              className="rounded-xl flex items-center justify-center gap-2 bg-red-500 text-white h-10 w-28 shadow shadow-red-400"
+              onClick={() => handleCancelState()}
+            >
+              <FaCircleXmark />
+              Hủy chấm
+            </div>
+          </>
+        ) : todayInfo?.dilam === false ? (
+          <>
+            <div
+              className="rounded-xl flex items-center justify-center gap-2 bg-orange-500 shadow shadow-blue-400 text-white h-10 flex-1"
+              onClick={() => setPopup(true)}
+            >
+              <BsClipboardCheckFill />
+              Sửa kiểu nghỉ
+            </div>
+            <div
+              className="rounded-xl flex items-center justify-center gap-2 bg-red-500 text-white h-10 w-28 shadow shadow-red-400"
+              onClick={() => handleCancelState()}
+            >
+              <PiCalendarXFill /> Thôi, chê
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              className="rounded-xl flex items-center justify-center gap-2 bg-blue-600 shadow shadow-blue-400 text-white h-10 flex-1"
+              onClick={() => fastCheck()}
+            >
+              <BsClipboardCheckFill />
+              Chấm công
+            </div>
+            <div
+              className="rounded-xl flex items-center justify-center gap-2 bg-red-500 text-white h-10 w-28 shadow shadow-red-400"
+              onClick={() => fastOff()}
+            >
+              <PiCalendarXFill /> Nay nghi
+            </div>
+          </>
+        )}
+      </div>
+
+      {popup ? (
+        <PopupWrapper onClose={() => setPopup(false)}>
+          <WorkCheck
+            todayInfo={todayInfo}
+            onClose={() => {
+              setPopup(false);
+              monthWorkQuery.refetch();
+            }}
+          />
+        </PopupWrapper>
+      ) : null}
+    </div>
+  );
 
   return (
     <>

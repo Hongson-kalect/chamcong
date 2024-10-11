@@ -102,3 +102,28 @@ export function getTimeDiff(date1, date2) {
   const date2Minus = date2.split(":");
   return (date1Minus[0] - date2Minus[0]) * 60 + (date1Minus[1] - date2Minus[1]);
 }
+
+export function scrollToElement(elementId) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+export function numberToCurrency2(
+  input: number | string,
+  gap: number = 3,
+  symbol: string = ","
+) {
+  let result = "";
+
+  const text = input.toString();
+  let i = 0;
+  while (i < text.length) {
+    if (i !== 0 && (text.length - i) % gap === 0) result += symbol + text[i];
+    else result += text[i];
+    i++;
+  }
+
+  return result;
+}

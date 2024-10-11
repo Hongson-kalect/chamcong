@@ -5,10 +5,12 @@ import { UserInfoType } from "@/utils/interface";
 import { useApi } from "@/utils/useApi";
 import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
+import { FaBars } from "react-icons/fa6";
 import { Outlet, replace } from "react-router-dom";
 import { getUserID } from "zmp-sdk";
 import { getUserInfo } from "zmp-sdk/apis";
 import { useNavigate } from "zmp-ui";
+import SideBar from "./sidebar";
 
 export interface IAppLayoutProps {}
 
@@ -16,18 +18,17 @@ export default function AppLayout(props: IAppLayoutProps) {
   const navigate = useNavigate();
   const { userInfo, setUserInfo } = useAppStore();
   const { login, register } = useApi();
+  const { setShowNavbar } = useAppStore();
 
   // const [used, setUsed] = React.useState(async () => await getCache(["used"]));
   const userZaloInfo = useQuery({
     queryFn: async () => {
-      console.log("111", 111);
       return await getUserInfo();
     },
     queryKey: ["used"],
   });
 
   React.useEffect(() => {
-    console.log("2", userZaloInfo);
     if (userZaloInfo.status === "pending") return;
     setUserInfo({ ...userZaloInfo.data?.userInfo });
     if (userZaloInfo.data) {
@@ -87,10 +88,8 @@ export default function AppLayout(props: IAppLayoutProps) {
   }, [permisson.data]);
 
   return (
-    <div className="w-screen h-screen flex flex-col">
-      {/* <div>
-        <div className="status-bar h-10 bg-blue-950 w-screen"></div>
-      </div> */}
+    <div className="w-screen h-screen flex flex-col relative">
+      <SideBar />
       <div className="flex-1 bg-[#f5f5f5]">
         {permisson.isPending || userZaloInfo.isPending ? (
           <div>Loading</div>
@@ -98,6 +97,14 @@ export default function AppLayout(props: IAppLayoutProps) {
           <Outlet />
         )}
       </div>
+
+      <button
+        onClick={() => setShowNavbar(true)}
+        className="fixed bottom-40 right-4 h-10 w-10 bg-blue-800 opacity-40 text-white rounded-full flex items-center justify-center"
+      >
+        {/* <FaArrowDown /> */}
+        <FaBars />
+      </button>
     </div>
   );
 }
